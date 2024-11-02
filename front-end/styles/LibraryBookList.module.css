@@ -1,0 +1,84 @@
+.bookSection {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: white;
+    flex: 1;
+    padding-left: 5rem;
+    max-width: 100%;
+}
+.bookList {
+    display: grid;
+    gap: 1.5rem;
+}
+.bookItem {
+    border-bottom: 1px solid #d1d5db;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start; 
+    gap: 1.5rem;
+}
+.bookImage {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+}
+
+.bookDetails {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.bookTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.bookAuthor {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0%;
+}
+
+.bookGenres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    font-size: 1rem;
+    color: #888;
+    margin-top: 3rem;
+    width: 20vw;
+    
+}
+.genre {
+    background-color: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.bookActions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.bookPrice {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.addToCart {
+    background-color: #10b981;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    width: 7rem;
+}
+.addToCart:hover {
+    background-color: #059669;
+}

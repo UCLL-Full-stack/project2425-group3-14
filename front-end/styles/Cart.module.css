@@ -1,0 +1,98 @@
+.bookSection {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: white;
+    flex: 1;
+    padding-left: 1rem;
+    max-width: 100%;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; 
+    justify-content: center;
+    padding-top: 0;
+}
+.title {
+    text-align: center;
+}
+.headers {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    padding-bottom: 0.5rem;
+    padding-right: 1rem;
+    margin: 0;
+    border-bottom: 1px solid #d1d5db;
+    text-align: center;
+}
+.productHeader{
+    text-align: left;
+}
+.priceTotalHeader{
+    text-align: right;
+}
+
+
+.bookList {
+    display: grid;
+    gap: 0.5rem;
+}
+.bookItem {
+    border-bottom: 1px solid #d1d5db;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    align-items: center; 
+}
+.bookImage {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+}
+.bookDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.bookProduct {
+    display: flex;
+    gap: 0.5rem;
+}
+.bookTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.bookAuthor {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0%;
+}
+.bookPrice {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.bookTotalPrice {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-align: right;
+}
+.removeFromCart {
+    margin-top: 3rem;
+}
+
+.quantityActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+
+}
+.totalPrice {
+    text-align: right;
+}

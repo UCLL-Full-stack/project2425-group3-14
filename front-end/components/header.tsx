@@ -5,8 +5,8 @@ const Header: React.FC = () => {
         <nav>
             <h1>BookMarkt</h1>
             <ul>
-                <li><a href="/">Library</a></li>
-                <li><a href="/">Basket</a></li>
+                <li><a href="/library">Library</a></li>
+                <li><a href="/cart">Cart</a></li>
                 <li><a href="/login">Login</a></li>
             </ul>
         </nav>

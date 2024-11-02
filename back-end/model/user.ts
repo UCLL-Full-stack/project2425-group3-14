@@ -1,4 +1,5 @@
 import { Role } from "../types";
+import { Cart } from "./cart";
 
 export class User {
     public id?: number;
@@ -6,6 +7,7 @@ export class User {
     private email: string;
     private password: string;
     private role: Role;
+    private cart?: Cart;
 
     constructor(user: {
         id?: number;
@@ -13,6 +15,7 @@ export class User {
         email: string;
         password: string;
         role: Role;
+        cart?: Cart;
     }) {
         this.validate(user);
 
@@ -21,6 +24,7 @@ export class User {
         this.email = user.email;
         this.password = user.password;
         this.role = user.role;
+        this.cart = user.cart || undefined;
     }
 
     getId(): number | undefined {
@@ -41,6 +45,10 @@ export class User {
 
     getRole(): Role {
         return this.role;
+    }
+
+    getCart(): Cart | undefined{
+        return this.cart;
     }
 
     validate(user: {
