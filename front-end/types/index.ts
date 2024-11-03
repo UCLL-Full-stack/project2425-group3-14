@@ -29,3 +29,13 @@ export type LibraryBookListProps = {
     books: Book[];
     onAddToCart: (bookId: number) => void;
 }
+
+export type Role = 'admin' | 'customer';
+
+export type User = {
+    id?: number;
+    username: string;
+    email: string;
+    password: string;
+    role: Role;
+};

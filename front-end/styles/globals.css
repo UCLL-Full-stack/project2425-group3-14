@@ -6,7 +6,7 @@
 header {
   background-color: #ececec;
   padding: 1rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
 }
 
 nav {
@@ -38,12 +38,20 @@ nav, nav ul, nav h1, li a {
 li a {
   text-decoration: none;
   font-size: 1rem;
+  padding: 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px solid #aaa0;
 }
 
-li a:hover, p a {
+li a:hover {
   color: #0861c7;
-  text-decoration: underline;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+p a {
+  color: #0861c7;
 }
 
 main {
@@ -104,4 +112,8 @@ input[type="password"] {
 
 .register-button:hover {
   background-color: #3b82f6;
+}
+
+.blue-text {
+  color: #0861c7;
 }

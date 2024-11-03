@@ -2,6 +2,7 @@
 import Head from "next/head.js";
 import Header from "../../components/header";
 import React, { useState } from "react";
+import UserService from "@/services/UserService";
 
 const Register: React.FC = () => {
 
@@ -13,36 +14,23 @@ const Register: React.FC = () => {
 
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
-
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-
+        
         setError("");
         setSuccessMessage("");
-
+        
         if (password.length < 8) {
             setError("Password must be longer than 8 characters long!");
             return;
         }
-
+    
         if (password !== repeatPassword) {
             setError("Passwords do not match!");
             return;
         }
-
         try {
-            const response = await fetch("http://localhost:3000/users/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    email,
-                    password,
-                    role,
-                }),
-            });
+            const response = await UserService.createUser({username, email, password, role});
 
             if (!response.ok) {
                 const error = await response.json();
