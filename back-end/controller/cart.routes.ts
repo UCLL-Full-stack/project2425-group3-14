@@ -80,11 +80,11 @@ router.get('/', async (req: Request, res: Response) => {
  *       500:
  *         description: Failed to get the cart.
  */
-router.get('/:id', (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
     const stringId = req.params.id;
     const cartId = parseInt(stringId, 10);
     try {
-        const cart = cartService.getCartById(cartId);
+        const cart = await cartService.getCartById(cartId);
         res.status(200).json(cart);
     } catch (error) {
         res.status(500).json({ error: 'Failed to get cart' });

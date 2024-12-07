@@ -7,9 +7,9 @@ import { UserInput } from '../types';
 
 const router = express.Router();
 
-router.get('/', (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
-        const users = UserService.getAllUsers();
+        const users = await UserService.getAllUsers();
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ error: 'Failed to get users' });

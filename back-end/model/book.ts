@@ -1,4 +1,9 @@
-
+import {
+    Book as BookPrisma,
+    Cart as CartPrisma,
+    User as UserPrisma,
+    CartItem as CartItemPrisma
+} from '@prisma/client'
 export class Book {
     public id?: number;
     private name: string;
@@ -82,5 +87,17 @@ export class Book {
         if (!book.imageUrl?.trim()) {
             throw new Error('Image Url is required')
         }
+    }
+
+    static from ({ id, name, quantity, author, genres, price, imageUrl}: BookPrisma) {
+        return new Book({
+            id,
+            name,
+            quantity,
+            author,
+            genres,
+            price,
+            imageUrl
+        })
     }
 }

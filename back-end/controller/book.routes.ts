@@ -46,9 +46,9 @@ const router = express.Router();
  *       500:
  *         description: Failed to get books.
  */
-router.get('/', (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
-        const books = bookService.getAllBooks();
+        const books = await bookService.getAllBooks();
         res.status(200).json(books);
     } catch (error) {
         res.status(500).json({ error: 'Failed to get books' });
@@ -78,11 +78,11 @@ router.get('/', (req: Request, res: Response) => {
  *       500:
  *         description: Failed to get the book.
  */
-router.get('/:id', (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
     const stringId = req.params.id;
     const bookId = parseInt(stringId, 10);
     try {
-        const book = bookService.getBookById(bookId);
+        const book = await bookService.getBookById(bookId);
         res.status(200).json(book);
     } catch (error) {
         res.status(500).json({ error: 'Failed to get books' });

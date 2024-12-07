@@ -1,11 +1,17 @@
 import { CartItem } from '../types';
 import { Book } from './book';
 import { User } from './user';
+import {
+    Book as BookPrisma,
+    Cart as CartPrisma,
+    User as UserPrisma,
+    CartItem as CartItemPrisma
+} from '@prisma/client'
 
 export class Cart {
     public id?: number;
-    private user?: User; 
-    private items: CartItem[]; 
+    readonly user?: User; 
+    readonly items: CartItem[]; 
     private totalPrice: number;
 
     constructor(cart: {
@@ -86,5 +92,14 @@ export class Cart {
         user?: User;
     }) {
        
+    }
+
+    static from({ id }: CartPrisma) {
+        return new Cart({
+            id,
+            // user: User.from(user),
+            // items: items.map((item) => CartItem.from(item)),
+            // totalPrice
+        })
     }
 }

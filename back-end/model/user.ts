@@ -1,13 +1,20 @@
 import { Role } from "../types";
+
 import { Cart } from "./cart";
+import {
+    Book as BookPrisma,
+    Cart as CartPrisma,
+    User as UserPrisma,
+    CartItem as CartItemPrisma
+} from '@prisma/client'
 
 export class User {
     public id?: number;
-    private username: string;
-    private email: string;
-    private password: string;
-    private role: Role;
-    private cart?: Cart;
+    readonly username: string;
+    readonly email: string;
+    readonly password: string;
+    readonly role: Role;
+    readonly cart?: Cart;
 
     constructor(user: {
         id?: number;
@@ -69,5 +76,16 @@ export class User {
         if (!user.role) {
             throw new Error('Role is required');
         }
+    }
+
+    static from({ id, username, email, password, role, cart}: UserPrisma & { cart?: CartPrisma; }) {
+        return new User({
+            id,
+            username,
+            email,
+            password,
+            role: role as Role,
+            // cart: Cart.from(cart?cart:undefined),
+        })
     }
 }
