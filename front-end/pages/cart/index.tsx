@@ -9,22 +9,37 @@ import { useRouter } from "next/router";
 import CartBookList from "@/components/cartBookList";
 
 const Cart: React.FC = () => {
-    const [items, setItems] = useState<CartItem[]>([]);
-    const { cartId } = useCart();
-    const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [items, setItems] = useState<CartItem[]>([]); 
+    const [totalPrice, setTotalPrice] = useState<number>(0); 
     const [isLoading, setIsLoading] = useState(false);
+    const [cartId, setCartId] = useState<string | null>(null);
     const router = useRouter();
 
     const fetchBooksInCart = async () => {
-        if (!cartId) {
-            setItems([]);
+        if (typeof window === "undefined") {
+            console.error("Session storage issue");
+            return;
+        }
+
+        const storedCartId = JSON.parse(sessionStorage.getItem("loggedInUser")!)?.cartId;
+        if (!storedCartId) {
+            console.warn("No cart ID found, resetting items and totalPrice");
+            setItems([]); 
+            setTotalPrice(1);
             return;
         }
 
         try {
-            const response = await CartService.allBooksInCart(cartId)
+            const response = await CartService.allBooksInCart(storedCartId);
+
+            if (!response.ok) {
+                console.error("Failed to fetch cart data:", response.statusText);
+                return;
+            }
+
             const data = await response.json();
-            
+            console.log("Cart Data Fetched:", data);
+
             setItems(data.items || []); 
             setTotalPrice(data.totalPrice || 0);
         } catch (error) {
@@ -36,19 +51,24 @@ const Cart: React.FC = () => {
         if (isLoading) return;
         setIsLoading(true);
 
-        try {
-            const response = await CartService.adjustQuantity(cartId, bookId, action)
+        if (typeof window !== "undefined") {
+            const storedCartId = JSON.parse(sessionStorage.getItem("loggedInUser")!)?.cartId;
+            if (!storedCartId) return;
 
-            if (response.ok) {
-                fetchBooksInCart(); 
-            } else {
-                const errorData = await response.json();
-                console.error(`Failed to ${action} quantity:`, errorData.error);
+            try {
+                const response = await CartService.adjustQuantity(storedCartId, bookId, action);
+
+                if (response.ok) {
+                    await fetchBooksInCart(); 
+                } else {
+                    const errorData = await response.json();
+                    console.error(`Failed to ${action} quantity:`, errorData.error);
+                }
+            } catch (error) {
+                console.error(`Error adjusting quantity (${action}):`, error);
+            } finally {
+                setIsLoading(false);
             }
-        } catch (error) {
-            console.error(`Error adjusting quantity (${action}):`, error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -56,19 +76,24 @@ const Cart: React.FC = () => {
         if (isLoading) return;
         setIsLoading(true);
 
-        try {
-            const response = await CartService.removeFromCart(cartId, bookId)
+        if (typeof window !== "undefined") {
+            const storedCartId = JSON.parse(sessionStorage.getItem("loggedInUser")!)?.cartId;
+            if (!storedCartId) return;
 
-            if (response.ok) {
-                fetchBooksInCart();
-            } else {
-                const errorData = await response.json();
-                console.error("Failed to remove book from cart:", errorData.error);
+            try {
+                const response = await CartService.removeFromCart(storedCartId, bookId);
+
+                if (response.ok) {
+                    await fetchBooksInCart();
+                } else {
+                    const errorData = await response.json();
+                    console.error("Failed to remove book from cart:", errorData.error);
+                }
+            } catch (error) {
+                console.error("Error removing book from cart:", error);
+            } finally {
+                setIsLoading(false);
             }
-        } catch (error) {
-            console.error("Error removing book from cart:", error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -77,8 +102,18 @@ const Cart: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchBooksInCart();
-    }, [cartId]); 
+        if (typeof window !== "undefined") {
+            const storedCartId = JSON.parse(sessionStorage.getItem("loggedInUser")!)?.cartId;
+            console.log("Cart ID:", storedCartId);
+            setCartId(storedCartId);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (cartId) {
+            fetchBooksInCart();
+        }
+    }, [cartId]);
 
     return (
         <>
@@ -92,7 +127,7 @@ const Cart: React.FC = () => {
                 <Header />
                 <h2 className={styles.title}>Your Cart</h2>
                 <main className={styles.main}>
-                <CartBookList
+                    <CartBookList
                         items={items}
                         onAdjustQuantity={adjustQuantity}
                         onRemoveFromCart={removeFromCart}

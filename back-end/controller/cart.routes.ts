@@ -6,6 +6,11 @@ const router = express.Router();
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
  *   schemas:
  *     Cart:
  *       type: object
@@ -37,6 +42,8 @@ const router = express.Router();
  * @swagger
  * /carts:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a list of all carts.
  *     responses:
  *       200:
@@ -48,19 +55,21 @@ const router = express.Router();
  *       500:
  *         description: Failed to get carts.
  */
-router.get('/', async (req: Request, res: Response) => {
-    try {
-        const carts = await cartService.getAllCarts();
-        res.status(200).json(carts);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to get carts' });
-    }
-});
+// router.get('/', async (req: Request, res: Response) => {
+//     try {
+//         const carts = await cartService.getAllCarts();
+//         res.status(200).json(carts);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Failed to get carts' });
+//     }
+// });
 
 /**
  * @swagger
  * /carts/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a cart by its ID.
  *     parameters:
  *       - name: id
@@ -95,6 +104,8 @@ router.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /carts/add/{cartId}/{bookId}:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Add a book to the specified cart.
  *     parameters:
  *       - name: cartId
@@ -124,6 +135,9 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.post('/add/:cartId/:bookId', async (req: Request, res: Response) => {
     const stringCartId = req.params.cartId;
     const cartId = parseInt(stringCartId, 10);
+    if (isNaN(cartId)) {
+        return res.status(400).json({ error: 'Invalid cart ID' });
+      }      
     const stringBookId = req.params.bookId;
     const bookId = parseInt(stringBookId, 10);
     
@@ -141,6 +155,8 @@ router.post('/add/:cartId/:bookId', async (req: Request, res: Response) => {
  * @swagger
  * /carts/remove/{cartId}/{bookId}:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Remove a book from the specified cart.
  *     parameters:
  *       - name: cartId
@@ -187,6 +203,8 @@ router.post('/remove/:cartId/:bookId', async (req: Request, res: Response) => {
  * @swagger
  * /carts/decrease/{cartId}/{bookId}:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Decrease the quantity of a book in the specified cart.
  *     parameters:
  *       - name: cartId

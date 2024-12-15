@@ -10,9 +10,11 @@ import { useCart } from "@/context/cartContext";
 
 const ReadBookById = () => {
     const [book, setBook] = useState<Book>(null);
-    const router = useRouter()
-    const {bookId} = router.query
+    const router = useRouter();
+    const {bookId} = router.query;
     const { cartId, setCartId } = useCart();
+    const isLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('loggedInUser');
+
 
     const getBookById = async () => {
         if (!bookId) return;
@@ -63,11 +65,14 @@ const ReadBookById = () => {
                             <h3 className={styles.bookTitle}>{book.name}</h3>
                             <p className={styles.bookAuthor}>by {book.author}</p>
                             <p className={styles.bookPrice}>${book.price.toFixed(2)}</p>
-                            <button 
-                                className={styles.addToCart}
-                                onClick={() => addToCart(book.id)}
-                                >Add to Cart
-                            </button>
+                            {isLoggedIn && (
+                                <button
+                                    className={styles.addToCart}
+                                    onClick={() => addToCart(book.id)}
+                                >
+                                    Add to Cart
+                                </button>
+                            )}
                         </div>
                     </section>
                 )}

@@ -26,8 +26,12 @@ const createUser = async ({ username, email, password, role}: User): Promise<Use
                 email,
                 password,
                 role,
+                cart: { create: { totalPrice: 0 } }, 
             },
+            include: { cart: true },
+
         });
+        // createCart(userPrisma.id);
         return User.from(userPrisma);
     } catch (error) {
         console.error(error);

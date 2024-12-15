@@ -1,11 +1,15 @@
 import express, { Request, Response } from 'express';
 import bookService from '../service/book.service'; 
-
 const router = express.Router();
 
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
  *   schemas:
  *     Book:
  *       type: object
@@ -35,6 +39,8 @@ const router = express.Router();
  * @swagger
  * /books:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a list of all books.
  *     responses:
  *       200:
@@ -59,6 +65,8 @@ router.get('/', async (req: Request, res: Response) => {
  * @swagger
  * /books/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a book by its ID.
  *     parameters:
  *       - name: id
@@ -85,7 +93,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         const book = await bookService.getBookById(bookId);
         res.status(200).json(book);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to get books' });
+        res.status(500).json({ error: error.message || 'Failed to get books' });
     }
 });
 

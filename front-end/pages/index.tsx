@@ -1,12 +1,28 @@
 import Head from "next/head";
 import Header from "@/components/header";
-// import { Inter } from "next/font/google";
-
-
-import React from "react";
-// const inter = Inter({ subsets: ["latin"] });
+import React, { useState, useEffect } from "react";
 
 const Home: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState<string>("guest");
+
+  
+  useEffect(() => {
+    const loggedInUser = sessionStorage.getItem("loggedInUser");
+
+    if (loggedInUser) {
+      try {
+        const parsedUser = JSON.parse(loggedInUser);
+        if (parsedUser?.username) {
+          setUsername(parsedUser.username);
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.error("Error parsing loggedInUser", error);
+      }
+    }
+  }, []);
+
   return (
     <>
       <Head>
@@ -15,16 +31,17 @@ const Home: React.FC = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div >
-        <Header></Header>
-      <main className="p-1 flex-grow flex justify-center items-center">
-        <section>
-          <h2>Home</h2>
-          <p>Welcome to BookMarkt</p>
-        </section>
-      </main>
+      <div>
+        <Header />
+        <main className="p-1 flex-grow flex justify-center items-center">
+          <section>
+            <h2>Welcome, {username}</h2>
+            <p>With BookMarkt you can easily <br />search and buy books.</p>
+          </section>
+        </main>
       </div>
     </>
   );
-}
+};
+
 export default Home;

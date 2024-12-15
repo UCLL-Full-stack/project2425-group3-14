@@ -1,7 +1,7 @@
-import { User } from "@/types";
+import { User } from "../types";
 
 const createUser = ({username, email, password, role}:User) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/register', {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/signup', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -15,8 +15,19 @@ const createUser = ({username, email, password, role}:User) => {
     });
 };
 
+const loginUser = (user: User) => {
+    return fetch(process.env.NEXT_PUBLIC_API_URL + "/users/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+    });
+};
+
 const UserService = {
-    createUser
+    createUser,
+    loginUser
 };
 
 export default UserService;

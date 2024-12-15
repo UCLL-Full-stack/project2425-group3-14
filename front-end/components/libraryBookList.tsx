@@ -9,6 +9,8 @@ import { LibraryBookListProps } from '@/types';
 const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart }) => {
     const router = useRouter();
 
+    const isLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('loggedInUser');
+
     const handleBookClick = (bookId: number) => {
         router.push(`/books/${bookId}`);
     };
@@ -36,12 +38,14 @@ const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart })
                         </div>
                         <div className={styles.bookActions}>
                             <p className={styles.bookPrice}>${book.price}</p>
-                            <button
-                                className={styles.addToCart}
-                                onClick={() => onAddToCart(book.id)}
-                            >
-                                Add to Cart
-                            </button>
+                            {isLoggedIn && (
+                                <button
+                                    className={styles.addToCart}
+                                    onClick={() => onAddToCart(book.id)}
+                                >
+                                    Add to Cart
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}

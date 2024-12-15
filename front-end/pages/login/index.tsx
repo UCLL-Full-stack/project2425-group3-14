@@ -1,9 +1,89 @@
 import Head from "next/head.js";
 import Header from "../../components/header";
-
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import UserService from "../../services/UserService.ts";
+import { StatusMessage } from "@types";
+import classNames from "classnames";
 
 const Login: React.FC = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+  const router = useRouter();
+
+  const validate = (): boolean => {
+    let isValid = true;
+
+    if (!username.trim()) {
+      setError("Username and/or Password is incorrect");
+      isValid = false;
+    }
+
+    if (!password.trim()) {
+      setError("Username and/or Password is incorrect");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    setError("");
+    setSuccessMessage("");
+
+    if (!validate()) {
+      return;
+    }
+
+    const user = { username, password };
+
+    try {
+      const response = await UserService.loginUser(user);
+
+      if (response.ok) {
+        setSuccessMessage("Login successful!");
+        setStatusMessages([{ message: "Login successful", type: "success" }]);
+
+        const user = await response.json();
+        console.log("User API response:", user); 
+
+        const userData = {
+          token: user.token,
+          username: user.username,
+          userId: user.userId,
+          email: user.email,
+          role: user.role,
+          cartId: user.cartId,
+        };
+
+        console.log("User data before storing:", userData); 
+        console.log("Users Id is:", user.id);
+        sessionStorage.setItem("loggedInUser", JSON.stringify(userData));
+        console.log("SessionStorage after storing:", sessionStorage.getItem("loggedInUser")); // Debug log
+
+        localStorage.setItem("loggedInUser", username);
+        setTimeout(() => {
+          router.push("/");
+        }, 800);
+      } else {
+        const errorData = await response.json();
+        console.error("Login error response:", errorData); 
+        throw new Error(errorData.error || "Login failed");
+      }
+    } catch (err) {
+      console.error("Error during login:", err); 
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      setStatusMessages([{ message: "Login failed", type: "error" }]);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -12,38 +92,46 @@ const Login: React.FC = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div >
-        <Header></Header>
+      <div>
+        <Header />
         <main className="p-1 flex-grow flex justify-center items-center">
-            <section>
+          <section>
             <h2>Login</h2>
-            <form className="form">
-
-                <label htmlFor="username">Username:</label>
-                <input
+            <form className="form" onSubmit={handleSubmit}>
+              <label htmlFor="username">Username:</label>
+              <input
                 type="text"
                 id="username"
                 name="username"
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
                 required
-                />
+              />
 
-                <label htmlFor="password">Password:</label>
-                <input
+              <label htmlFor="password">Password:</label>
+              <input
                 type="password"
                 id="password"
                 name="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 required
-                />
+              />
 
-                <button type="submit" className="register-button">
-                    Login
-                </button>
+              <button type="submit" className="register-button">
+                Login
+              </button>
             </form>
-            <p>Create an account? <a href="/register">register</a></p>
-            </section>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+            <p>
+              Create an account? <a href="/register">register</a>
+            </p>
+          </section>
         </main>
       </div>
     </>
   );
-}
+};
+
 export default Login;

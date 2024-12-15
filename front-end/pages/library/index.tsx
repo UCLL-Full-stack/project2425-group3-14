@@ -16,11 +16,11 @@ const Books: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-    const { cartId, setCartId } = useCart();
+    // const { cartId, setCartId } = useCart();
     const router = useRouter();
-
+    
     const genres = ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Biography' ,'Mystery', 'Horror', 'Adventure', 'Action', 'Romance'];
-
+    
     const fetchBooks = async () => {
         try {
             const response = await LibraryService.getAllBooks(); 
@@ -34,16 +34,21 @@ const Books: React.FC = () => {
 
     const addToCart = async (bookId: number) => {
         try {
-            const response = await CartService.addToCart(cartId, bookId);
-
-            if (response.ok) {
-                const updatedCart = await response.json();
-                setCartId(updatedCart.id);
-                console.log("Book added to cart:", updatedCart);
-            } else {
-                const errorData = await response.json();
-                console.error("Failed to add book to cart:", errorData.error);
-            }
+            // const response = 
+            if (typeof window !== "undefined") {
+                const cartId = JSON.parse(sessionStorage.getItem("loggedInUser")!).cartId;
+                console.log("Cart ID: a", cartId);
+                await CartService.addToCart(cartId, bookId);
+              }
+            
+            // if (response.ok) {
+            //     const updatedCart = await response.json();
+            //     setCartId(updatedCart.id);
+            //     console.log("Book added to cart:", updatedCart);
+            // } else {
+            //     const errorData = await response.json();
+            //     console.error("Failed to add book to cart:", errorData.error);
+            // }
         } catch (error) {
             console.error("Error adding book to cart:", error);
         }
@@ -114,6 +119,7 @@ const Books: React.FC = () => {
                     />
                     <LibraryBookList
                         books={filteredBooks}
+                        // onAddToCart={handleBookClick}
                         onAddToCart={addToCart}
                     />
                 </main>

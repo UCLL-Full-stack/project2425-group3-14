@@ -27,5 +27,19 @@ type UserInput = {
     role: Role;
 };
 
+type AuthenticationResponse = {
+    token: string;
+    username: string;
+    userId: number;
+    email: string;
+    role: Role;
+    cartId: number;
+};
 
-export { Role, UserInput, Genre, CartItem };
+type Cart = {
+    userId: number,
+    items: CartItem[],
+    totalPrice: number,
+}
+
+export { Role, Cart, UserInput, Genre, CartItem, AuthenticationResponse };

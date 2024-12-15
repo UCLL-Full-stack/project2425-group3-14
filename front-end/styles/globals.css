@@ -35,6 +35,10 @@ nav, nav ul, nav h1, li a {
   background-color: #ececec;
 }
 
+.header1 {
+  text-decoration: none;
+}
+
 li a {
   text-decoration: none;
   font-size: 1rem;

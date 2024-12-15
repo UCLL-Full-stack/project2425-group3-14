@@ -4,21 +4,24 @@ import { User } from '../model/user';
 import bookDb from '../repository/book.db';
 
 
-const getAllCarts = (): Cart[] => {
-    return cartDb.getAllCarts();
-};
+// const getAllCarts = async (): Promise<Cart[]> => {
+//     return await cartDb.getAllCarts();
+// };
 
-const getCartById = (cartId: number): Cart=> {
-    const cart = cartDb.findCartById(cartId);
+const getCartById = async (cartId: number): Promise<Cart | null> => {
+    const cart = await cartDb.findCartById(cartId);
     if (!cart){
         throw new Error("Cart with this id does not exist!");
     }
-    return cart
+    console.log('Cart retrieved from SERVICE:', cart);
+
+    return await cart;
 }
 
-const addBookToCart = (cartId: number | undefined, bookId: number): Cart => {
-    const cart = cartId ? cartDb.findCartById(cartId) : cartDb.createCart();
-    const book = bookDb.findBookById(bookId);
+const addBookToCart = async (cartId: number | undefined, bookId: number): Promise<Cart> => {
+    // const cart = cartId ? await cartDb.findCartById(cartId) : await cartDb.createCart();
+    const cart = await cartDb.findCartById(cartId);
+    const book = await bookDb.findBookById(bookId);
 
     if (!book) {
         throw new Error("Book with this id does not exist!");
@@ -28,38 +31,37 @@ const addBookToCart = (cartId: number | undefined, bookId: number): Cart => {
         throw new Error(`Cart with this id does not exist!`);
     }
 
-    return cartDb.addBookToCart(cart, book);
+    return await cartDb.addBookToCart(cart, book);
     
 };
 
-const removeBookFromCart = (cartId: number, bookId: number): Cart => {
-    const cart = cartDb.findCartById(cartId);
+const removeBookFromCart = async (cartId: number, bookId: number): Promise<Cart> => {
+    const cart = await cartDb.findCartById(cartId);
 
     if (!cart) {
         throw new Error("Cart with this id does not exist!");
     }
 
-    return cartDb.removeBookFromCart(cart, bookId);
+    return await cartDb.removeBookFromCart(cart, bookId);
     
 };
 
-const decreaseBookQuantityFromCart = (cartId: number, bookId: number): Cart => {
-    const cart = cartDb.findCartById(cartId);
+const decreaseBookQuantityFromCart = async (cartId: number, bookId: number): Promise<Cart> => {
+    const cart = await cartDb.findCartById(cartId);
 
     if (!cart) {
         throw new Error("Cart with this id does not exist!");
     }
 
 
-    return cartDb.decreaseBookQuantityInCart(cart, bookId);
-    
+    return await cartDb.decreaseBookQuantityInCart(cart, bookId);
 };
 
 
 export default {
     addBookToCart,
     removeBookFromCart,
-    getAllCarts,
+    // getAllCarts,
     getCartById,
     decreaseBookQuantityFromCart,
     

@@ -1,25 +1,21 @@
-import { CartItem } from '../types';
+import { CartItem } from '../types'; 
 import { Book } from './book';
 import { User } from './user';
-import {
-    Book as BookPrisma,
-    Cart as CartPrisma,
-    User as UserPrisma,
-    CartItem as CartItemPrisma
-} from '@prisma/client'
+import { Cart as CartPrisma, CartItem as CartItemPrisma, User as UserPrisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export class Cart {
     public id?: number;
-    readonly user?: User; 
-    readonly items: CartItem[]; 
+    public user?: User;
+    public items: CartItem[]; 
     private totalPrice: number;
 
     constructor(cart: {
         id?: number;
         user?: User;
     }) {
-        this.validate(cart);
-
         this.id = cart.id;
         this.user = cart.user;
         this.items = [];
@@ -80,26 +76,39 @@ export class Cart {
     }
 
     private calculateTotalPrice() {
-        let total = 0
+        let total = 0;
         for (const item of this.items) {
-            total += item.book.getPrice() * item.quantityInCart
+            total += item.book.getPrice() * item.quantityInCart;
         }
 
         this.totalPrice = total;
     }
 
-    validate(cart: {
-        user?: User;
-    }) {
-       
-    }
+    static async from({ id, user, items }: CartPrisma & { user?: UserPrisma; items?: CartItemPrisma[] }) {
+        const cart = new Cart({ id });
 
-    static from({ id }: CartPrisma) {
-        return new Cart({
-            id,
-            // user: User.from(user),
-            // items: items.map((item) => CartItem.from(item)),
-            // totalPrice
-        })
+        if (user) {
+            cart.user = User.from(user);
+        }
+
+        if (items) {
+            cart.items = await Promise.all(
+                items.map(async (item) => {
+                    const book = await prisma.book.findUnique({
+                        where: { id: item.bookId }, 
+                    });
+                    if (book) {
+                        return {
+                            book: Book.from(book), 
+                            quantityInCart: item.quantityInCart,
+                        };
+                    }
+                    throw new Error(`Book with ID ${item.bookId} not found`);
+                })
+            );
+        }
+
+        cart.calculateTotalPrice();
+        return cart;
     }
 }
