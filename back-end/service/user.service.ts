@@ -75,4 +75,14 @@ const getAllUsers = async ({role}): Promise<User[]> => {
     }
 };
 
-export default { registerUser, getAllUsers, createUser, authenticate };
+const deleteUser = async (id): Promise<User> => {
+    const user = await userDb.findUserById(id);
+
+    if (!user) {
+        throw new Error("User with this id does not exist (anymore)!");
+    }
+
+    return await userDb.deleteUser(id);
+}
+
+export default { registerUser, getAllUsers, createUser, authenticate, deleteUser };

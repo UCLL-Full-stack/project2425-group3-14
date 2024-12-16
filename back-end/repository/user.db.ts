@@ -91,4 +91,36 @@ const getAllUsers = async (): Promise<User[]> => {
 //     return users;
 // };
 
-export default { createUser, getAllUsers, findUserByUsername, findUserByEmail, findUserById };
+const deleteUser = async (id: number): Promise<User> => {
+    try {
+
+        const user = await database.user.findUnique({
+            where: { id },
+            include: { cart: true },
+        });
+
+        if (!user) {
+            throw new Error(`User with id ${id} not found.`);
+        }
+
+        if (user.cart) {
+            await database.cartItem.deleteMany({
+                where: { cartId: user.cart.id },
+            });
+            await database.cart.delete({
+                where: { id: user.cart.id },
+            });
+        }
+
+        await database.user.delete({
+            where: { id },
+        });
+
+        return User.from(user);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
+    }
+}
+
+export default { createUser, getAllUsers, findUserByUsername, findUserByEmail, findUserById, deleteUser, };

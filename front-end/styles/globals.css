@@ -62,11 +62,11 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5rem;
+  padding: 2rem 5rem;
 }
 
 section {
-  max-width: 25rem;
+  max-width: 30rem;
   width: 100%;
   padding: 1.25rem;
   border: 1px solid #ddd;
@@ -120,4 +120,51 @@ input[type="password"] {
 
 .blue-text {
   color: #0861c7;
+}
+
+/* Styles for my user listing */
+
+table {
+  margin: auto;
+}
+
+thead {
+  background-color: rgb(200, 200, 200);
+  /* background-color: rgba(190, 197, 206, 0.286); */
+
+}
+
+tbody {
+  background-color: rgb(230, 230, 230);
+  /* background-color: rgba(8, 97, 199, 0.1); */
+
+}
+
+td, th {
+  text-align: left;
+  border-radius: 5px;
+  padding: 0.3rem;
+  border: 3px solid #0861c700;
+}
+
+td button {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+tr:hover td {
+  background-color: rgba(8, 97, 199, 0.1);
+  border: 3px solid #0861c795;
+}
+
+tr:hover td button {
+  background-color: #c9302c;
+}
+
+tr:hover td button:hover {
+  background-color: #a72924;
 }
