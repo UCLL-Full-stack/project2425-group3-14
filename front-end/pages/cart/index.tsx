@@ -101,6 +101,32 @@ const Cart: React.FC = () => {
         router.push(`/books/${bookId}`); 
     };
 
+    const handleOrderClick = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
+        if (typeof window !== "undefined") {
+            const storedCartId = JSON.parse(sessionStorage.getItem("loggedInUser")!)?.cartId;
+            if (!storedCartId) return;
+
+            try { 
+                const response = await CartService.orderCart(cartId);
+                
+                if (response.ok) {
+                    await fetchBooksInCart();
+                } else {
+                    const errorData = await response.json();
+                    console.error("Failed to order cart:", errorData.error);
+                }
+            } catch (error) {
+                console.error("Error ordering cart:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        
+    };
+
     useEffect(() => {
         if (typeof window !== "undefined") {
             const storedCartId = JSON.parse(sessionStorage.getItem("loggedInUser")!)?.cartId;
@@ -123,8 +149,8 @@ const Cart: React.FC = () => {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <Header />
             <div className={styles.container}>
-                <Header />
                 <h2 className={styles.title}>Your Cart</h2>
                 <main className={styles.main}>
                     <CartBookList
@@ -132,6 +158,7 @@ const Cart: React.FC = () => {
                         onAdjustQuantity={adjustQuantity}
                         onRemoveFromCart={removeFromCart}
                         onBookClick={handleBookClick}
+                        onOrderCart={handleOrderClick}
                         totalPrice={totalPrice}
                         isLoading={isLoading}
                     />

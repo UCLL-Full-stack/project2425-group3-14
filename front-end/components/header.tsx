@@ -30,7 +30,8 @@ const Header: React.FC = () => {
         <ul>
           {isAdmin && <li><a href="/users">Users</a></li>}
           <li><a href="/library">Library</a></li>
-          <li><a href="/cart">Cart</a></li>
+          <li><a href="/cart">Cart</a></li> 
+          {isLoggedIn && <li><a href="/orders">Orders</a></li>}
           {!isLoggedIn && <li><a href="/login">Login</a></li>}
           {isLoggedIn && (
             <li>

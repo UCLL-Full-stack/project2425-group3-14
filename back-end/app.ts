@@ -8,6 +8,7 @@ import { expressjwt } from 'express-jwt';
 import userRoutes from './controller/user.routes';
 import bookRoutes from './controller/book.routes';
 import cartRoutes from './controller/cart.routes';
+import orderRoutes from './controller/order.routes'
 import helmet from 'helmet';
 
 const app = express();
@@ -28,6 +29,7 @@ app.use(
 app.use('/users', userRoutes);
 app.use('/books', bookRoutes);
 app.use('/carts', cartRoutes);
+app.use('/orders', orderRoutes);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });

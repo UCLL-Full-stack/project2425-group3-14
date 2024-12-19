@@ -1,5 +1,6 @@
 import { Cart } from '../model/cart';
 import cartDb from '../repository/cart.db';
+import orderDb from '../repository/order.db';
 import { User } from '../model/user';
 import bookDb from '../repository/book.db';
 
@@ -46,7 +47,21 @@ const removeBookFromCart = async (cartId: number, bookId: number): Promise<Cart>
     
 };
 
+const orderCart = async (cartId: number): Promise<Cart> => {
+    const cart = await cartDb.findCartById(cartId);
+    if (!cart) {
+        throw new Error("Cart with this id does not exist!");
+    }
+    const order = await orderDb.createOrder(cart);
+    for (const item of cart.getItems()){
+        const bookId = item.book.getId();
+        await removeBookFromCart(cartId, bookId);
+    }
+    return cart
+}
+
 const decreaseBookQuantityFromCart = async (cartId: number, bookId: number): Promise<Cart> => {
+    console.log("cartId in orderCart:", cartId);
     const cart = await cartDb.findCartById(cartId);
 
     if (!cart) {
@@ -64,5 +79,6 @@ export default {
     // getAllCarts,
     getCartById,
     decreaseBookQuantityFromCart,
+    orderCart,
     
 };

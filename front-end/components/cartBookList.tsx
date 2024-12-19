@@ -2,14 +2,17 @@
 import React from "react";
 import styles from "../styles/Cart.module.css";
 import { CartItem } from "@/types";
+import CartService from "@/services/CartService";
 
 interface CartBookListProps {
     items: CartItem[];
     onAdjustQuantity: (bookId: number, action: "increase" | "decrease") => void;
     onRemoveFromCart: (bookId: number) => void;
     onBookClick: (bookId: number) => void;
+    onOrderCart: () => void;
     totalPrice: number;
     isLoading: boolean;
+    cartId: number;  // Assuming you have a cartId prop passed down
 }
 
 const CartBookList: React.FC<CartBookListProps> = ({
@@ -17,9 +20,12 @@ const CartBookList: React.FC<CartBookListProps> = ({
     onAdjustQuantity,
     onRemoveFromCart,
     onBookClick,
+    onOrderCart,
     totalPrice,
-    isLoading
+    isLoading,
+    cartId
 }) => {
+
     return (
         <section className={styles.bookSection}>
             <div className={styles.bookList}>
@@ -74,6 +80,13 @@ const CartBookList: React.FC<CartBookListProps> = ({
             {items.length > 0 && (
                 <div className={styles.totalPrice}>
                     <h3>Total Amount: ${totalPrice.toFixed(2)}</h3>
+                    <button 
+                        className={styles.orderButton} 
+                        onClick={() => onOrderCart()}
+                        disabled={isLoading}
+                    >
+                        Order
+                    </button>
                 </div>
             )}
         </section>

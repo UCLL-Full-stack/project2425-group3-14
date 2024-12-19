@@ -81,7 +81,8 @@ const findUserByEmail = async ({ email }: { email: string }): Promise<User | nul
 const getAllUsers = async (): Promise<User[]> => {
     try {
         const usersPrisma = await database.user.findMany();
-        return usersPrisma.map((userPrisma) => User.from(userPrisma));
+        const users = await Promise.all(usersPrisma.map((userPrisma) => User.from(userPrisma)));
+        return users
     } catch (error) {
         console.error(error);
         throw new Error('Database error. See server log for details.');

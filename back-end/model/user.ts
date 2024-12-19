@@ -1,20 +1,25 @@
 import { Role } from "../types";
 
 import { Cart } from "./cart";
+import { Order } from "./order";
 import {
     Book as BookPrisma,
     Cart as CartPrisma,
+    Order as OrderPrisma,
     User as UserPrisma,
-    CartItem as CartItemPrisma
+    CartItem as CartItemPrisma,
+    PrismaClient
 } from '@prisma/client'
 
+const prisma = new PrismaClient();
 export class User {
     public id?: number;
     readonly username: string;
     readonly email: string;
     readonly password: string;
     readonly role: Role;
-    readonly cart?: Cart;
+    readonly cartId?: number;
+    readonly orders: Order[];
 
     constructor(user: {
         id?: number;
@@ -22,7 +27,8 @@ export class User {
         email: string;
         password: string;
         role: Role;
-        cart?: Cart;
+        cartId?: number;
+        orders?: Order[];
     }) {
         this.validate(user);
 
@@ -31,7 +37,11 @@ export class User {
         this.email = user.email;
         this.password = user.password;
         this.role = user.role;
-        this.cart = user.cart || undefined;
+        this.cartId = user.cartId || undefined;
+        this.orders = [];
+        if (user.orders) {
+            this.orders = user.orders;
+        }
     }
 
     getId(): number | undefined {
@@ -54,8 +64,12 @@ export class User {
         return this.role;
     }
 
-    getCart(): Cart | undefined{
-        return this.cart;
+    getCartId(): number | undefined{
+        return this.cartId;
+    }
+
+    getOrders(): Order[]{
+        return this.orders
     }
 
     validate(user: {
@@ -78,14 +92,28 @@ export class User {
         }
     }
 
-    static from({ id, username, email, password, role, cart}: UserPrisma & { cart?: CartPrisma; }) {
+    static async from({ id, username, email, password, role, cartId, orders}: UserPrisma & { cartId?: number, orders?: OrderPrisma[]  }) {
+        const resolvedOrders = orders ? await Promise.all(
+            orders.map(async (order) => {
+                const items = await prisma.orderItem.findMany({
+                    where: { orderId: order.id },
+                });
+    
+                return await Order.from({
+                    ...order,
+                    items, 
+                });
+            })
+        ) : [];
+    
         return new User({
             id,
             username,
             email,
             password,
             role: role as Role,
-            // cart: Cart.from(cart?cart:undefined),
+            cartId: cartId,
+            orders: resolvedOrders,
         })
     }
 }

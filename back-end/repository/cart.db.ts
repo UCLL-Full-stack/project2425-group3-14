@@ -8,15 +8,15 @@ const carts = [
 ]
 let nextCartId = 2;
 
-const createCart = async ({user}: Cart): Promise<Cart> => {
-    const existingCart = await findCartByUserId(user.id);
+const createCart = async ({userId}: Cart): Promise<Cart> => {
+    const existingCart = await findCartByUserId(userId);
     if (existingCart) {
         return existingCart; 
     }
     try {
         const cartPrisma = await database.cart.create({
             data: {
-                userId: user.id,
+                userId: userId,
                 totalPrice: 0,
             },
             include: {

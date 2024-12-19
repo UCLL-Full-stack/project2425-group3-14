@@ -247,4 +247,43 @@ router.post('/decrease/:cartId/:bookId', async (req: Request, res: Response) => 
     }
 });
 
+/**
+ * @swagger
+ * /carts/order/{cartId}:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Place an order for the specified cart.
+ *     parameters:
+ *       - name: cartId
+ *         in: path
+ *         required: true
+ *         description: The ID of the cart to place an order for.
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *     responses:
+ *       200:
+ *         description: The updated cart after placing the order.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cart'
+ *       400:
+ *         description: Failed to place an order for the cart.
+ */
+router.post('/order/:cartId', async (req: Request, res: Response) => {
+    const stringCartId = req.params.cartId;
+    const cartId = parseInt(stringCartId, 10);
+
+    try {
+        const updatedCart = await cartService.orderCart(cartId);
+        res.status(200).json(updatedCart);
+    }catch (error) {
+        console.error("Error ordering cart:", error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed ordering cart';
+        res.status(400).json({ error: errorMessage });
+    }
+});
+
 export default router;

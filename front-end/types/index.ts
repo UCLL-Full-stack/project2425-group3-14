@@ -8,6 +8,19 @@ export type Book = {
     imageUrl: string;
 }
 
+export type Order = {
+    id: number;
+    userId: number;
+    items: OrderItem[];
+    totalPrice: number;
+}
+
+export type OrderItem = {
+    book: Book;
+    quantityInCart: number;
+}
+
+
 export type CartItem = {
     book: Book;
     quantityInCart: number;
@@ -30,7 +43,7 @@ export type LibraryBookListProps = {
     onAddToCart: (bookId: number) => void;
 }
 
-export type Role = 'admin' | 'customer';
+export type Role = 'admin' | 'customer' | 'manager';
 
 export type User = {
     id?: number;
