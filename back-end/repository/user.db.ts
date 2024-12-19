@@ -100,7 +100,7 @@ const deleteUser = async (id: number): Promise<User> => {
         });
 
         if (!user) {
-            throw new Error(`User with id ${id} not found.`);
+            throw new Error(`User with id ${id} was not found.`);
         }
 
         if (user.cart) {

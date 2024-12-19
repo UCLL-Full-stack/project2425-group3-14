@@ -60,7 +60,7 @@ const createUser = async ({ username, email, password, role}: UserInput): Promis
     if (existing_username) {
         throw new Error(`User with username: ${username} already exists.`)
     }
-
+    console.log(password);
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = new User({username, email, password: hashedPassword, role});
 

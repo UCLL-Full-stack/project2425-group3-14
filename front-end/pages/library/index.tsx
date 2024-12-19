@@ -13,6 +13,15 @@ import LibraryBookList from "@/components/libraryBookList";
 
 const Books: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
+
+    const [title, setTitle] = useState("");
+    const [price, setPrice] = useState("");
+    const [genress, setGenress] = useState<string[]>([]);
+    const [author, setAuthor] = useState("");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    
+
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
@@ -21,6 +30,15 @@ const Books: React.FC = () => {
     
     const genres = ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Biography' ,'Mystery', 'Horror', 'Adventure', 'Action', 'Romance'];
     
+      useEffect(() => {
+        const user = sessionStorage.getItem('loggedInUser');
+        if (user) {
+          const parsedUser = JSON.parse(user);
+          setIsLoggedIn(true);
+          setIsAdmin(parsedUser.role === 'admin' || parsedUser.role === 'ADMIN');
+        }
+      }, []);
+
     const fetchBooks = async () => {
         try {
             const response = await LibraryService.getAllBooks(); 
@@ -91,8 +109,35 @@ const Books: React.FC = () => {
     const handleBookClick = (bookId: number) => {
         router.push(`/books/${bookId}`);
     };
+    // const handleAddBook = async (event: React.FormEvent) => {
+    //     event.preventDefault();
 
-
+    // };
+    const handleAddBook = async (event: React.FormEvent) => {
+        event.preventDefault();
+    
+        const newBook = {
+            name: title,
+            author,
+            genres: genress, // Array of selected genres
+            price: parseFloat(price),
+            quantity: 0,
+            imageUrl: '/Book1.png'
+        };
+    
+        try {
+            await LibraryService.addBook(newBook);
+            fetchBooks();
+            setTitle("");
+            setAuthor("");
+            setGenress([]);
+            setPrice("");
+            console.log("Book added succesfully!")
+        } catch (error) {
+            console.error("Error adding book:", error);
+        }
+    };
+    
     return (
         <>
             <Head>
@@ -104,24 +149,87 @@ const Books: React.FC = () => {
             <div className={styles.container}>
                 <Header />
                 <div className={styles.searchContainer}>
-                    <h2 className={styles.title}>Available Books</h2>
-                    <Searchbar
+                    {!isAdmin && <Searchbar
                          searchTerm={searchTerm}
                          onSearch={handleSearch}
                          resultsCount={filteredBooks.length}
-                     />
+                         /> }
+                    {isAdmin && 
+                        <section>
+                            <h2>Add a book</h2>
+                            <form className="form" onSubmit={handleAddBook}>
+                                <label htmlFor="title">Title:</label>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    value={title}
+                                    onChange={(event) => setTitle(event.target.value)}
+                                    required
+                                />
+                                <label htmlFor="author">Author:</label>
+                                <input
+                                    type="text"
+                                    id="author"
+                                    name="author"
+                                    value={author}
+                                    onChange={(event) => setAuthor(event.target.value)}
+                                    required
+                                />
+                                <label htmlFor="genres">Genres:</label>
+                                <div className="genres-checkboxes">
+                                    {genres.map((genre) => (
+                                        <div key={genre}>
+                                            <input
+                                                type="checkbox"
+                                                id={genre}
+                                                name="genres"
+                                                value={genre}
+                                                checked={genress.includes(genre)} // Check if the genre is already selected
+                                                onChange={(event) => {
+                                                    if (event.target.checked) {
+                                                        // Add the genre to the state
+                                                        setGenress([...genress, genre]);
+                                                    } else {
+                                                        // Remove the genre from the state
+                                                        setGenress(genress.filter((g) => g !== genre));
+                                                    }
+                                                }}
+                                            />
+                                            <label htmlFor={genre}>{genre}</label>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <label htmlFor="price">Price:</label>
+                                <input
+                                    type="number"
+                                    id="price"
+                                    name="price"
+                                    value={price}
+                                    onChange={(event) => setPrice(event.target.value)}
+                                    required
+                                    />
+
+                                <button type="submit" className="form-button">
+                                    Add Book
+                                </button>
+                            </form>
+                        </section>
+                        }
                 </div>
+                <h2 className="h2">Available Books</h2>
                 <main className={styles.main}>
-                    <GenreSideBar
+                    {!isAdmin && <GenreSideBar
                         genres={genres}
                         selectedGenre={selectedGenre}
                         onGenreChange={handleGenreChange}
-                    />
+                    /> }
                     <LibraryBookList
                         books={filteredBooks}
                         // onAddToCart={handleBookClick}
                         onAddToCart={addToCart}
-                    />
+                    />    
                 </main>
             </div>
         </>

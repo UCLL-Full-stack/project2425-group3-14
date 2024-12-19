@@ -1,4 +1,6 @@
 import { Book } from '../model/book';
+import { BookInput } from '../types';
+
 import database from './database';
 
 const books = [
@@ -49,4 +51,46 @@ const findBookById = async (id: number): Promise<Book | undefined>=> {
     }        
 };
 
-export default { getAllBooks, findBookById };
+const addBook = async ({name, author, genres, quantity, price, imageUrl }: BookInput): Promise<Book> => {
+    try {
+        const bookPrisma = await database.book.create({
+            data: {
+                name,
+                author,
+                genres,
+                quantity,
+                price,
+                imageUrl,
+            }
+        });
+        return Book.from(bookPrisma);       
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const removeBook = async (id: number): Promise<Book> => {
+    try {
+        const book = await database.book.findUnique({
+            where: { id },
+            include: { cartItem: true}
+        });
+
+        if (book == undefined) {
+            throw new Error(`Book with id ${id} was not found.`);
+        }
+        
+        await database.book.delete({
+            where: { id },
+        });
+        
+        return Book.from(book);
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
+
+
+export default { getAllBooks, findBookById, addBook, removeBook };

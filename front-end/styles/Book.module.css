@@ -58,6 +58,11 @@
     cursor: pointer;
     width: 7rem;
 }
-.addToCart:hover {
+/* .addToCart:hover {
     background-color: #059669;
+} */
+
+.addToCart:hover {
+    background-color: #047857; /* Darker green for click effect */
+    transform: scale(0.95); /* Slightly reduce size for a pressed effect */
 }

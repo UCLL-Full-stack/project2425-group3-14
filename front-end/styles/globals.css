@@ -101,7 +101,7 @@ input[type="password"] {
   font-size: 1rem;
 }
 
-.register-button {
+.form-button {
   width: 100%;
   padding: 0.6rem;
   margin-top: 1rem;
@@ -112,10 +112,65 @@ input[type="password"] {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.register-button:hover {
+.form-button:hover {
+  transform: scale(1.05); 
   background-color: #3b82f6;
+}
+
+.form-button:active {
+  background-color: #3b82f6;
+  transform: scale(0.9); 
+}
+
+.guest-button {
+  width: 100%;
+  padding: 0.6rem;
+  /* margin-top: 0.2rem; */
+  background-color: #59677f;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.guest-button:hover {
+  background-color: #6a7fa4;
+  transform: scale(1.05); 
+}
+
+.guest-button:active {
+  background-color: #6a7fa4;
+  transform: scale(0.9);
+}
+
+.remove-button {
+  width: 100%;
+  padding: 0.6rem;
+  /* margin-top: 0.2rem; */
+  background-color: #59677f;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.remove-button:hover {
+  background-color: #6a7fa4;
+  transform: scale(1.05); 
+}
+
+.remove-button:active {
+  background-color: #6a7fa4;
+  transform: scale(0.9);
 }
 
 .blue-text {
@@ -154,6 +209,7 @@ td button {
   border-radius: 5px;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 tr:hover td {
@@ -167,4 +223,14 @@ tr:hover td button {
 
 tr:hover td button:hover {
   background-color: #a72924;
+  transform: scale(1.05); /* Slightly reduce size for a pressed effect */
+}
+
+tr:hover td button:active {
+  background-color: #a72924;
+  transform: scale(0.9); /* Slightly reduce size for a pressed effect */
+}
+
+.h2 {
+  text-align: center;
 }

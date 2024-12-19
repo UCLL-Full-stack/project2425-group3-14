@@ -35,8 +35,16 @@ const Home: React.FC = () => {
         <Header />
         <main className="p-1 flex-grow flex justify-center items-center">
           <section>
-            <h2>Welcome, {username}</h2>
-            <p>With BookMarkt you can easily <br />search and buy books.</p>
+            {isLoggedIn ? 
+              <h2>Welcome, {username}</h2>
+            :
+              <h2>Welcome, stranger</h2>
+            }
+            {isLoggedIn ? 
+             <p>With BookMarkt you can easily <br />search and buy books.</p> 
+            : 
+             <p>Login/register first to<br />search and buy books.</p>
+            }
           </section>
         </main>
       </div>

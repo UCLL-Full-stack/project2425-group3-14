@@ -6,12 +6,12 @@ import {
 } from '@prisma/client'
 export class Book {
     public id?: number;
-    private name: string;
-    private quantity: number;
-    private author: string;
-    private genres: string[]; 
-    private price: number;
-    private imageUrl: string;
+    public name: string;
+    public quantity: number;
+    public author: string;
+    public genres: string[]; 
+    public price: number;
+    public imageUrl: string;
 
     constructor(book: {
         id?: number;

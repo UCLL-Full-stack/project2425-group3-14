@@ -32,6 +32,54 @@ const Login: React.FC = () => {
     return isValid;
   };
 
+  const loginAsGuest = async () => {
+    // event.preventDefault();
+    const user = { username: "guest", password: "guest123"}
+    setError("");
+    setSuccessMessage("");
+    
+    try {
+      const response = await UserService.loginUser(user);
+
+      if (response.ok) {
+        setSuccessMessage("Login successful!");
+        setStatusMessages([{ message: "Login successful", type: "success" }]);
+        
+        const user = await response.json();
+        console.log("User API response:", user); 
+
+        const userData = {
+          token: user.token,
+          username: user.username,
+          userId: user.userId,
+          email: user.email,
+          role: user.role,
+          cartId: user.cartId,
+        };
+        
+        console.log("User data before storing:", userData); 
+        console.log("Users Id is:", user.id);
+        sessionStorage.setItem("loggedInUser", JSON.stringify(userData));
+        console.log("SessionStorage after storing:", sessionStorage.getItem("loggedInUser")); // Debug log
+        
+        localStorage.setItem("loggedInUser", username);
+        setTimeout(() => {
+          router.push("/");
+        }, 800);
+      } else {
+        const userr = { username: "guest", email: "guest@guest.com", password: "guest123", role: "guest"}
+        const response = await UserService.createUser(userr);
+        const message = await response.json();
+        console.log(message || "Guest configured message!");
+        loginAsGuest();
+      }
+    } catch (err) {
+      console.error("Error during login:", err); 
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      setStatusMessages([{ message: "Login failed", type: "error" }]);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -118,7 +166,7 @@ const Login: React.FC = () => {
                 required
               />
 
-              <button type="submit" className="register-button">
+              <button type="submit" className="form-button">
                 Login
               </button>
             </form>
@@ -127,6 +175,10 @@ const Login: React.FC = () => {
             <p>
               Create an account? <a href="/register">register</a>
             </p>
+            <p>or</p>
+              <button onClick={() => loginAsGuest()} className="guest-button">
+              Continue as Guest
+            </button>
           </section>
         </main>
       </div>

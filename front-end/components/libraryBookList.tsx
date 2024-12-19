@@ -1,15 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/LibraryBookList.module.css';
 import { Book } from '@/types';
 import { useRouter } from 'next/router';
 import { LibraryBookListProps } from '@/types';
+import LibraryService from '@/services/LibraryService';
 
 
 
 const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart }) => {
     const router = useRouter();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);  
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isGuest, setIsGuest] = useState(false);
+    
 
-    const isLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('loggedInUser');
+    const handleRemoveBook = async (bookId: number) => {
+        try {
+            await LibraryService.removeBook(bookId);
+    
+            // fetchUsers();
+            // setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+        } catch (error) {
+            console.error("Failed to remove user:", error);
+        }
+    };
+
+  useEffect(() => {
+    const user = sessionStorage.getItem('loggedInUser');
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setIsLoggedIn(true);
+      setIsAdmin(parsedUser.role === 'admin' || parsedUser.role === 'ADMIN');
+      setIsGuest(parsedUser.role === 'guest');
+    }
+  }, []);
+    // const isLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('loggedInUser');
 
     const handleBookClick = (bookId: number) => {
         router.push(`/books/${bookId}`);
@@ -38,12 +63,20 @@ const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart })
                         </div>
                         <div className={styles.bookActions}>
                             <p className={styles.bookPrice}>${book.price}</p>
-                            {isLoggedIn && (
+                            {isLoggedIn && !isGuest && (
                                 <button
-                                    className={styles.addToCart}
-                                    onClick={() => onAddToCart(book.id)}
+                                className={styles.addToCart}
+                                onClick={() => onAddToCart(book.id)}
                                 >
                                     Add to Cart
+                                </button>
+                            )}
+                            {isAdmin && (
+                                <button
+                                    onClick={() => handleRemoveBook(book.id)}
+                                    className={styles.deleteBook}
+                                >
+                                    Delete book
                                 </button>
                             )}
                         </div>

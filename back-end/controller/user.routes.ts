@@ -195,7 +195,7 @@ router.post('/remove/:userId', async (req: Request, res: Response) => {
         console.error("Error removing this user:", error);
         const errorMessage = error instanceof Error ? error.message : 'Failed to remove user';
         res.status(400).json({ error: errorMessage });
-    }
-})
+    };
+});
 
 export default router;

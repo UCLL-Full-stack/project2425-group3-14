@@ -64,7 +64,7 @@ const ReadBookById = () => {
                         <div className={styles.bookDetails}>
                             <h3 className={styles.bookTitle}>{book.name}</h3>
                             <p className={styles.bookAuthor}>by {book.author}</p>
-                            <p className={styles.bookPrice}>${book.price.toFixed(2)}</p>
+                            {/* <p className={styles.bookPrice}>${book.price.toFixed(2)}</p> */}
                             {isLoggedIn && (
                                 <button
                                     className={styles.addToCart}

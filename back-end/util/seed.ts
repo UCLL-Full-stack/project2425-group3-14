@@ -41,7 +41,7 @@ const main = async () => {
             username: 'admin',
             email: 'admin@example.com',
             password: await bcrypt.hash('admin123', 12),
-            role: 'ADMIN', // Ensure this matches your schema's enum definition
+            role: 'admin',
         },
     });
 
@@ -50,21 +50,36 @@ const main = async () => {
             username: 'maria',
             email: 'maria@example.com',
             password: await bcrypt.hash('maria123', 12),
-            role: 'CUSTOMER', // Ensure this matches your schema's enum definition
+            role: 'customer', 
+        },
+    });
+    const guestUser = await prisma.user.create({
+        data: {
+            username: 'guest',
+            email: 'guest@example.com',
+            password: await bcrypt.hash('guest123', 12),
+            role: 'guest', 
         },
     });
 
-    // Seed Carts
+
     const adminCart = await prisma.cart.create({
         data: {
-            userId: adminUser.id, // Link cart to admin user
+            userId: adminUser.id, 
+            totalPrice: 0,
+        },
+    });
+
+    const guestCart = await prisma.cart.create({
+        data: {
+            userId: guestUser.id, 
             totalPrice: 0,
         },
     });
 
     const customerCart = await prisma.cart.create({
         data: {
-            userId: customerUser.id, // Link cart to customer user
+            userId: customerUser.id, 
             totalPrice: 0,
         },
     });

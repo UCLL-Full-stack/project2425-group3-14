@@ -1,5 +1,6 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import bookService from '../service/book.service'; 
+import { BookInput } from '../types';
 const router = express.Router();
 
 /**
@@ -95,6 +96,30 @@ router.get('/:id', async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ error: error.message || 'Failed to get books' });
     }
+});
+
+router.post('/add', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const bookInput = <BookInput>req.body;
+        const response = await bookService.addBook(bookInput);
+        res.status(200).json({message: "Authentication succesful", ...response});
+    } catch (error) {
+        next(error);   
+    };
+});
+
+router.post('/remove/:bookId', async (req: Request, res: Response) => {
+    const stringBookId = req.params.bookId;
+    const bookId = parseInt(stringBookId, 10);
+
+    try {
+        const deletedBook = await bookService.removeBook(bookId);
+        res.status(200).json(deletedBook);
+    } catch (error) {
+        console.error("Error removing this book:", error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to remove book';
+        res.status(400).json({ error: errorMessage });
+    };
 });
 
 export default router;
