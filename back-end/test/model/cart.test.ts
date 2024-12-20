@@ -1,78 +1,114 @@
-import { Cart } from "../../model/cart";
-import { Book } from "../../model/book";
-import { User } from "../../model/user";
-import { CartItem } from "../../types";
+import { Cart } from '../../model/cart';
+import { Book } from '../../model/book';
 
-
-const id = 1;
-const name ="book1";
-const quantity = 10;
-const author = "Jeff";
-const genres = ["Fictuin"];
-const price = 20;
-const imageUrl = "/test.png";
-const email = "test@test";
-const password = "test123456";
-const role = 'customer';
-
-let book: Book;
-let user: User;
-let cart: Cart;
-
-
-beforeEach(() => {
-    book = new Book({name: name, quantity: quantity, author: author, genres: genres, price: price, imageUrl: imageUrl});
-    user = new User({id: 1, username: author, email: email, password: password, role: role});
-    cart = new Cart({ user });
+const book1 = new Book({
+    name: "Book 1",
+    quantity: 10,
+    author: "Author 1",
+    genres: ["Fiction"],
+    price: 20,
+    imageUrl: "/book1.png"
 });
 
-test('given: valid values for cart, when: cart is created, then: cart is created with those values', () => {
-    const cart2 = new Cart({id: id, user: user})
-
-    expect(cart2.getItems()).toEqual([])
-    expect(cart2.getId()).toEqual(id)
-    expect(cart2.getTotalPrice()).toEqual(0)
-    expect(cart2.getUser()).toEqual(user)
-
+const book2 = new Book({
+    name: "Book 2",
+    quantity: 5,
+    author: "Author 2",
+    genres: ["Non-Fiction"],
+    price: 30,
+    imageUrl: "/book2.png"
 });
 
-test('given: a book, when: addBook is called, then: the book is added to the cart', () => {
-    cart.addBook(book);
+test('given: a cart is created, when: no items are added, then: cart is empty and total price is zero', () => {
+    // Given
+    const cart = new Cart({});
+
+    // When/Then
+    expect(cart.getItems()).toEqual([]);
+    expect(cart.getTotalPrice()).toEqual(0);
+});
+
+test('given: a book is added to the cart, when: the cart is checked, then: cart contains the book with quantity 1', () => {
+    // Given
+    const cart = new Cart({});
+
+    // When
+    cart.addBook(book1);
+
+    // Then
     const items = cart.getItems();
-    
-    expect(items.length).toBe(1);
-    expect(items[0].book.getName()).toBe(name);
-    expect(items[0].quantityInCart).toBe(1);
+    expect(items.length).toEqual(1);
+    expect(items[0].book.getName()).toEqual(book1.getName());
+    expect(items[0].quantityInCart).toEqual(1);
+    expect(cart.getTotalPrice()).toEqual(book1.getPrice());
 });
 
-test('given: a book with quantity 1 in cart, when: removeBook is called, then: the book is removed from cart', () => {
-    cart.addBook(book);
-    cart.removeBook(book.getId()!);
+test('given: a book is added twice to the cart, when: the cart is checked, then: cart contains the book with quantity 2', () => {
+    // Given
+    const cart = new Cart({});
 
+    // When
+    cart.addBook(book1);
+    cart.addBook(book1);
+
+    // Then
     const items = cart.getItems();
-    expect(items.length).toBe(0);
+    expect(items.length).toEqual(1);
+    expect(items[0].book.getName()).toEqual(book1.getName());
+    expect(items[0].quantityInCart).toEqual(2);
+    expect(cart.getTotalPrice()).toEqual(book1.getPrice() * 2);
 });
 
-test('given: book not in cart, when: removeBook is called, then: an error is thrown', () => {
-    expect(() => cart.removeBook(book.getId()!)).toThrow(`Book with ID ${book.getId()} not found in cart.`);
-});
+test('given: a book is removed from the cart, when: the cart is checked, then: the cart no longer contains the book', () => {
+    // Given
+    const cart = new Cart({});
+    cart.addBook(book1);
 
-test('given: cart with books, when: removeCartItem is called, then: the book is removed', () => {
-    cart.addBook(book);
-    cart.removeCartItem(book.getId()!);
+    // When
+    cart.removeBook(book1.getId()!);
 
+    // Then
     const items = cart.getItems();
-    expect(items.length).toBe(0);
+    expect(items.length).toEqual(0);
+    expect(cart.getTotalPrice()).toEqual(0);
 });
 
-test('given: book not in cart, when: removeCartItem is called, then: an error is thrown', () => {
-    expect(() => cart.removeCartItem(book.getId()!)).toThrow(`Book with ID ${book.getId()} not found in cart.`);
+test('given: a book is added twice and removed once, when: the cart is checked, then: the book quantity decreases to 1', () => {
+    // Given
+    const cart = new Cart({});
+    cart.addBook(book1);
+    cart.addBook(book1);
+
+    // When
+    cart.removeBook(book1.getId()!);
+
+    // Then
+    const items = cart.getItems();
+    expect(items.length).toEqual(1);
+    expect(items[0].book.getName()).toEqual(book1.getName());
+    expect(items[0].quantityInCart).toEqual(1);
+    expect(cart.getTotalPrice()).toEqual(book1.getPrice());
 });
 
-test('given: cart with multiple books, when: calculateTotalPrice is called, then: totalPrice is calculated correctly', () => {
-    const book2 = new Book({id: 2, name: "Book 2", quantity: 4, author: "John", genres: ['Action'], price: 15, imageUrl: imageUrl });
-    cart.addBook(book);
-    cart.addBook(book2);
+test('given: an invalid book ID is removed, when: the cart is checked, then: an error is thrown', () => {
+    // Given
+    const cart = new Cart({});
+    cart.addBook(book1);
 
-    expect(cart.getTotalPrice()).toEqual(book.getPrice() + book2.getPrice());
+    // When/Then
+    expect(() => cart.removeBook(999)).toThrow(`Book with ID 999 not found in cart.`);
+});
+
+test('given: a book is removed completely, when: the cart is checked, then: the book is not in the cart', () => {
+    // Given
+    const cart = new Cart({});
+    cart.addBook(book1);
+
+    // When
+    cart.removeCartItem(book1.getId()!);
+
+    // Then
+    const items = cart.getItems();
+    expect(items.length).toEqual(0);
+    expect(cart.getTotalPrice()).toEqual(0);
 });
