@@ -5,11 +5,16 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import UserService from "@/services/UserService";
 import { User } from "@/types";
+import CartService from "@/services/CartService";
+import { CartItem } from "@/types";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Users: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
+    const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
     const router = useRouter();
+    const [cartAmount, setCartAmount] = useState<number>(0);
+    const isLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('loggedInUser');
 
     const fetchUsers = async () => {
         try {
@@ -20,6 +25,23 @@ const Users: React.FC = () => {
             console.error("Failed to fetch users:", error);
         }
     };
+
+    const getCartAmount = async () => {
+            if (typeof window !== "undefined" && isLoggedIn) {
+                const cartId = JSON.parse(sessionStorage.getItem("loggedInUser")!).cartId;
+                const response = await CartService.allBooksInCart(cartId);
+                const cartItems = await response.json();
+                console.log("Cart Items:", cartItems);
+                if (cartItems.items && Array.isArray(cartItems.items)) {
+                    const totalQuantity = cartItems.items.reduce((total: number, cartItem: CartItem) => total + cartItem.quantityInCart, 0);
+                
+                    setCartAmount(totalQuantity);
+                    sessionStorage.setItem('cartAmount', totalQuantity.toString());
+                    } else {
+                    console.error("cartItems.items is not an array:", cartItems.items);
+                    }
+            }
+        }
 
 
 
@@ -34,8 +56,52 @@ const Users: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchUsers();
+        if (typeof window !== "undefined") {
+            const loggedInUser = sessionStorage.getItem("loggedInUser");
+            if (loggedInUser) {
+                const user = JSON.parse(loggedInUser);
+                if (user.role === "admin") {
+                    setIsAuthorized(true);
+                    fetchUsers();
+                    getCartAmount();
+                    const cartAmount = sessionStorage.getItem('cartAmount');
+                    if (cartAmount){
+                        setCartAmount(Number(cartAmount));
+                    }
+                } else {
+                    setIsAuthorized(false);
+                }
+            } else {
+                setIsAuthorized(false);
+            }
+        }
     }, []);
+
+    if (!isAuthorized) {
+        return (
+
+            <>
+            <Head>
+                <title>Users - BookMarkt</title>
+                <meta name="description" content="List of all available users" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <div className={styles.container}>
+                <Header cartAmount={cartAmount}/>
+                <div className={styles.searchContainer}>
+                    <h2 className={styles.title}>All Users</h2>
+                </div>
+                <main>
+                    <div className={styles.container}>
+                    <p  className={styles.errorMessage}>You are not authorized to view this page.</p>
+                    </div>
+                </main>
+            </div>
+        </>
+            
+        );
+    }
 
     return (
         <>
@@ -46,7 +112,7 @@ const Users: React.FC = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <div className={styles.container}>
-                <Header />
+                <Header cartAmount={cartAmount}/>
                 <div className={styles.searchContainer}>
                     <h2 className={styles.title}>All Users</h2>
                 </div>

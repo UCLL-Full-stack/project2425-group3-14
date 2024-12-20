@@ -2,6 +2,7 @@ import { Book } from "../model/book";
 
 type Role = 'admin' | 'customer' | 'guest';
 
+
 type Genre = 
     | 'Fiction' 
     | 'Non-Fiction' 
@@ -15,6 +16,11 @@ type Genre =
     | 'Romance'; 
 
 type CartItem = {
+    book: Book;
+    quantityInCart: number;
+};
+
+type OrderItem = {
     book: Book;
     quantityInCart: number;
 };
@@ -42,6 +48,7 @@ type Cart = {
     totalPrice: number,
 }
 
+
 type BookInput = {
     id?: number;
     name: string;
@@ -52,4 +59,5 @@ type BookInput = {
     imageUrl: string;
 }
 
-export { Role, Cart, UserInput, Genre, CartItem, AuthenticationResponse, BookInput };
+export { Role, Cart, UserInput, Genre, CartItem, AuthenticationResponse, BookInput, OrderItem };
+

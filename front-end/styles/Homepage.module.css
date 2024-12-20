@@ -1,0 +1,90 @@
+
+.main {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-start; 
+    padding: 2rem 5rem;
+
+  }
+  
+
+  .section {
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    padding: 2rem; 
+    width: 100%; 
+    max-width: 100%;
+  }
+  
+ 
+  .customTable {
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    margin: 0 auto; 
+    border-collapse: separate;
+    border-spacing: 0; 
+    width: 80%;
+  }
+  
+  .customThead {
+    background-color: transparent;
+  }
+  
+  .customTbody {
+    background-color: transparent; 
+  }
+  
+  .customTableT {
+    text-align: left;
+    border: none; 
+    padding: 0.5rem;
+    border-spacing: 0;
+  }
+  
+  .customTable td button {
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    cursor: inherit;
+    transition: none;
+  }
+  
+  .customTable tr:hover td {
+
+    background-color: transparent;
+    border: none;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+  
+  .customTable tr:hover td button {
+    background-color: transparent;
+  }
+  
+  .customTable tr:hover td button:hover {
+    background-color: transparent;
+    transform: none;
+  }
+  .customTableT {
+    border-bottom: 1px solid black;
+  }
+
+  .customTable th,
+.customTable td {
+  border-right: 1px solid black;  
+  border-radius: 0;
+  padding: 0.6rem;
+  text-align: left;
+}
+  
+  .customTable tr:hover td button:active {
+    background-color: transparent;
+    transform: none;
+  }
+  
+  .customTable .h2 {
+    text-align: left;
+  }
+  

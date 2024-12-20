@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 const main = async () => {
     // Clean up existing data
+    await prisma.orderItem.deleteMany(); 
+    await prisma.order.deleteMany(); 
     await prisma.cartItem.deleteMany();
     await prisma.cart.deleteMany();
     await prisma.book.deleteMany();
@@ -45,7 +47,7 @@ const main = async () => {
         },
     });
 
-    const customerUser = await prisma.user.create({
+    const customerUser1 = await prisma.user.create({
         data: {
             username: 'maria',
             email: 'maria@example.com',
@@ -53,6 +55,16 @@ const main = async () => {
             role: 'customer', 
         },
     });
+
+    const customerUser2 = await prisma.user.create({
+        data: {
+            username: 'john',
+            email: 'john@example.com',
+            password: await bcrypt.hash('john1234', 12),
+            role: 'customer',
+        }
+    });
+
     const guestUser = await prisma.user.create({
         data: {
             username: 'guest',
@@ -77,14 +89,55 @@ const main = async () => {
         },
     });
 
-    const customerCart = await prisma.cart.create({
+    const customerCart1 = await prisma.cart.create({
         data: {
-            userId: customerUser.id, 
+            userId: customerUser1.id, 
             totalPrice: 0,
         },
     });
 
-    console.log('Database seeded successfully! CartItems table is empty.');
+    const customerCart2 = await prisma.cart.create({
+        data: {
+            userId: customerUser2.id, 
+            totalPrice: 0,
+        },
+    });
+
+    const order1 = await prisma.order.create({
+        data: {
+            userId: customerUser1.id,
+            totalPrice: 40,
+            items: {
+                create: [
+                    {
+                        bookId: book1.id,
+                        quantityInCart: 2,
+                    },
+                    {
+                        bookId: book2.id,
+                        quantityInCart: 1, 
+                    },
+                ],
+            },
+        },
+    });
+
+    const order2 = await prisma.order.create({
+        data: {
+            userId: customerUser2.id,
+            totalPrice: 45,
+            items: {
+                create: [
+                    {
+                        bookId: book1.id,
+                        quantityInCart: 3,
+                    },
+                ],
+            },
+        },
+    });
+
+    console.log('Database seeded successfully!');
 };
 
 (async () => {

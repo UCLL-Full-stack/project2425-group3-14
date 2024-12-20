@@ -5,23 +5,14 @@ import { useRouter } from 'next/router';
 import { LibraryBookListProps } from '@/types';
 import LibraryService from '@/services/LibraryService';
 
+
+
 const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart }) => {
     const router = useRouter();
     const [isLoggedIn, setIsLoggedIn] = useState(false);  
     const [isAdmin, setIsAdmin] = useState(false);
     const [isGuest, setIsGuest] = useState(false);
     
-
-    const handleRemoveBook = async (bookId: number) => {
-        try {
-            await LibraryService.removeBook(bookId);
-    
-            // fetchUsers();
-            // setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-        } catch (error) {
-            console.error("Failed to remove user:", error);
-        }
-    };
 
   useEffect(() => {
     const user = sessionStorage.getItem('loggedInUser');
@@ -71,7 +62,7 @@ const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart })
                             )}
                             {isAdmin && (
                                 <button
-                                    onClick={() => handleRemoveBook(book.id)}
+                                    onClick={() => onRemoveBook(book.id)}
                                     className={styles.deleteBook}
                                 >
                                     Delete book

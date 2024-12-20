@@ -8,16 +8,16 @@ const prisma = new PrismaClient();
 
 export class Cart {
     public id?: number;
-    public user?: User;
+    public userId?: number;
     public items: CartItem[]; 
     private totalPrice: number;
 
     constructor(cart: {
         id?: number;
-        user?: User;
+        userId?: number;
     }) {
         this.id = cart.id;
-        this.user = cart.user;
+        this.userId = cart.userId;
         this.items = [];
         this.totalPrice = 0;
     }
@@ -67,8 +67,8 @@ export class Cart {
         return this.totalPrice;
     }
 
-    getUser(): User | undefined {
-        return this.user;
+    getUserId(): number | undefined {
+        return this.userId;
     }
 
     getId(): number | undefined {
@@ -84,28 +84,28 @@ export class Cart {
         this.totalPrice = total;
     }
 
-    static async from({ id, user, items }: CartPrisma & { user?: UserPrisma; items?: CartItemPrisma[] }) {
+    static async from({ id, userId, items }: CartPrisma & { userId?: number; items?: CartItemPrisma[] }) {
         const cart = new Cart({ id });
 
-        if (user) {
-            cart.user = User.from(user);
+        if (userId) {
+            cart.userId = userId;
         }
 
         if (items) {
-            cart.items = await Promise.all(
-                items.map(async (item) => {
-                    const book = await prisma.book.findUnique({
-                        where: { id: item.bookId }, 
-                    });
-                    if (book) {
-                        return {
-                            book: Book.from(book), 
-                            quantityInCart: item.quantityInCart,
-                        };
-                    }
-                    throw new Error(`Book with ID ${item.bookId} not found`);
-                })
-            );
+            const books = await prisma.book.findMany({
+                where: { id: { in: items.map(item => item.bookId) } },
+            });
+    
+            cart.items = items.map(item => {
+                const book = books.find(b => b.id === item.bookId);
+                if (book) {
+                    return {
+                        book: Book.from(book), 
+                        quantityInCart: item.quantityInCart,
+                    };
+                }
+                throw new Error(`Book with ID ${item.bookId} not found`);
+            });
         }
 
         cart.calculateTotalPrice();

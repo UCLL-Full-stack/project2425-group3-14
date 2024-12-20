@@ -66,8 +66,6 @@ router.get('/', async (req: Request, res: Response) => {
  * @swagger
  * /books/{id}:
  *   get:
- *     security:
- *       - bearerAuth: []
  *     summary: Retrieve a book by its ID.
  *     parameters:
  *       - name: id
@@ -88,13 +86,14 @@ router.get('/', async (req: Request, res: Response) => {
  *         description: Failed to get the book.
  */
 router.get('/:id', async (req: Request, res: Response) => {
+    console.log("test");
     const stringId = req.params.id;
     const bookId = parseInt(stringId, 10);
     try {
         const book = await bookService.getBookById(bookId);
         res.status(200).json(book);
     } catch (error) {
-        res.status(500).json({ error: error.message || 'Failed to get books' });
+        res.status(500).json({ error: 'Failed to get books' });
     }
 });
 

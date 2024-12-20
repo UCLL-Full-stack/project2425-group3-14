@@ -53,7 +53,20 @@ const adjustQuantity = (cartId: number, bookId: number, action: string) => {
 const removeFromCart = (cartId: number, bookId: number) => {
     if (typeof window !== "undefined") {
         const token = JSON.parse(sessionStorage.getItem("loggedInUser")!).token;
-        return fetch(`http://localhost:3000/carts/remove/${cartId}/${bookId}`, {
+        return fetch(process.env.NEXT_PUBLIC_API_URL + `/carts/remove/${cartId}/${bookId}`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+    }
+}
+
+const orderCart = async (cartId: number) => {
+    if (typeof window !== "undefined") {
+        const token = JSON.parse(sessionStorage.getItem("loggedInUser")!).token;
+        return fetch(process.env.NEXT_PUBLIC_API_URL + `/carts/order/${cartId}`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -68,5 +81,6 @@ const CartService = {
     allBooksInCart,
     adjustQuantity,
     removeFromCart,
+    orderCart,
 };
 export default CartService;

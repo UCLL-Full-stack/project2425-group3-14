@@ -1,0 +1,68 @@
+.orderSection {
+    background-color: white;
+    padding: 2rem;
+    flex: 1;
+    max-width: 100%;
+}
+
+.orderList {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.orderItem {
+    border-bottom: 1px solid #d1d5db;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.orderHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.orderId {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.username {
+    font-size: 1rem;
+    color: #555;
+    margin: 0;
+}
+
+.totalPrice {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.orderItems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.bookList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.bookItem {
+    font-size: 1rem;
+    color: #888;
+    padding: 0.25rem 0;
+}
+
+.bookItem:hover {
+    color: #555;
+}

@@ -16,6 +16,7 @@ model Book {
     price Int
     imageUrl String
     cartItem CartItem[]
+    orderItem OrderItem[]
 }
 
 model Cart {
@@ -33,6 +34,25 @@ model User {
     password String
     role String
     cart Cart?
+    orders Order[]
+}
+
+model Order {
+    id Int @id @default(autoincrement())
+    userId Int 
+    user User @relation(fields: [userId], references: [id])
+    items OrderItem[]
+    totalPrice Int
+    createdAt DateTime  @default(now())
+}
+
+model OrderItem {
+    id Int @id @default(autoincrement())
+    bookId Int
+    orderId Int 
+    book Book @relation(fields: [bookId], references: [id])
+    order Order @relation(fields: [orderId], references: [id])
+    quantityInCart Int
 }
 
 model CartItem {
@@ -40,7 +60,7 @@ model CartItem {
     bookId Int
     cartId Int
     book Book @relation(fields: [bookId], references: [id])
-    cart Cart @relation(fields: [cartId], references: [id])
+    cart Cart @relation(fields: [cartId], references: [id]) 
     quantityInCart Int
 }
 

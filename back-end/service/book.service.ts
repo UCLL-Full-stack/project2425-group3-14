@@ -23,10 +23,10 @@ const removeBook = async (id): Promise<Book> => {
     const book = await bookDb.removeBook(id);
 
     if (!book) {
-        throw new Error("User with this id does not exist.")
+        throw new Error("Book with this id does not exist.")
     }
 
-    return await bookDb.removeBook(id);
+    return await book;
 }
 
 

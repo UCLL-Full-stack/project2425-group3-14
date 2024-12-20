@@ -10,12 +10,12 @@ const getAllBooks = () => {
 };
 
 const getBookById = (bookId: number) => {
-    return fetch(process.env.NEXT_PUBLIC_API_URL + `/books/${bookId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
+        return fetch(process.env.NEXT_PUBLIC_API_URL + `/books/${bookId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 };
 
 const addBook = (book: Book) => {

@@ -4,12 +4,14 @@ import Searchbar from "../../components/searchbar"
 import GenreSideBar from "../../components/genreSideBar" 
 import styles from "../../styles/Library.module.css";
 import React, { useEffect, useState } from "react";
-import { useCart } from '../../context/cartContext';
 import { Book } from "@/types";
 import LibraryService from "@/services/LibraryService";
 import CartService from "@/services/CartService";
 import { useRouter } from "next/router";
 import LibraryBookList from "@/components/libraryBookList";
+import { CartItem } from "@/types";
+import LibraryHead from "@/components/libraryHead";
+
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Books: React.FC = () => {
@@ -21,8 +23,8 @@ const Books: React.FC = () => {
     const [author, setAuthor] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
-    
-
+    const [cartAmount, setCartAmount] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
@@ -31,14 +33,6 @@ const Books: React.FC = () => {
     
     const genres = ['Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Biography' ,'Mystery', 'Horror', 'Adventure', 'Action', 'Romance'];
     
-      useEffect(() => {
-        const user = sessionStorage.getItem('loggedInUser');
-        if (user) {
-          const parsedUser = JSON.parse(user);
-          setIsLoggedIn(true);
-          setIsAdmin(parsedUser.role === 'admin' || parsedUser.role === 'ADMIN');
-        }
-      }, []);
 
     const fetchBooks = async () => {
         try {
@@ -51,6 +45,23 @@ const Books: React.FC = () => {
         }
     };
 
+    const getCartAmount = async () => {
+        if (typeof window !== "undefined" && isLoggedIn) {
+            const cartId = JSON.parse(sessionStorage.getItem("loggedInUser")!).cartId;
+            const response = await CartService.allBooksInCart(cartId);
+            const cartItems = await response.json();
+            console.log("Cart Items:", cartItems);
+            if (cartItems.items && Array.isArray(cartItems.items)) {
+                const totalQuantity = cartItems.items.reduce((total: number, cartItem: CartItem) => total + cartItem.quantityInCart, 0);
+            
+                setCartAmount(totalQuantity);
+                sessionStorage.setItem('cartAmount', totalQuantity.toString());
+                } else {
+                console.error("cartItems.items is not an array:", cartItems.items);
+                }
+        }
+    }
+
     const addToCart = async (bookId: number) => {
         try {
             // const response = 
@@ -58,6 +69,8 @@ const Books: React.FC = () => {
                 const cartId = JSON.parse(sessionStorage.getItem("loggedInUser")!).cartId;
                 console.log("Cart ID: a", cartId);
                 await CartService.addToCart(cartId, bookId);
+                
+                getCartAmount();
               }
             
             // if (response.ok) {
@@ -73,8 +86,22 @@ const Books: React.FC = () => {
         }
     };
 
+
     useEffect(() => {
+        
         fetchBooks();
+        getCartAmount();
+        const cartAmount = sessionStorage.getItem('cartAmount');
+        if (cartAmount){
+            setCartAmount(Number(cartAmount));
+        }
+        const user = sessionStorage.getItem('loggedInUser');
+        if (user) {
+          const parsedUser = JSON.parse(user);
+          setIsLoggedIn(true);
+          setIsAdmin(parsedUser.role === 'admin' || parsedUser.role === 'ADMIN');
+        }
+        setIsLoading(false);
     }, []);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +155,7 @@ const Books: React.FC = () => {
     
         try {
             await LibraryService.addBook(newBook);
-            fetchBooks();
+            await fetchBooks();
             setTitle("");
             setAuthor("");
             setGenress([]);
@@ -138,17 +165,46 @@ const Books: React.FC = () => {
             console.error("Error adding book:", error);
         }
     };
+
+    const handleRemoveBook = async (bookId: number) => {
+            try {
+                await LibraryService.removeBook(bookId);
+                await fetchBooks()
+                // fetchUsers();
+                // setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+            } catch (error) {
+                console.error("Failed to remove user:", error);
+            }
+        };
+
+
+    if (isLoading) {
+        return (
+            <>
+                <LibraryHead/>
+            </>
+        )
+    }
+    else if (!isLoggedIn) {
+        return (
+            <>
+                <LibraryHead/>
+             <div className={styles.container}>
+                <Header cartAmount={cartAmount}/>
+                <main>
+                    <p className={styles.errorMessage}>You need to log in or continue as a guest to view the books.</p>
+                </main>
+            </div>
+
+            </>
+        );
+    }
     
     return (
         <>
-            <Head>
-                <title>Books - BookMarkt</title>
-                <meta name="description" content="List of all available books" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
+            <LibraryHead/>
             <div className={styles.container}>
-                <Header />
+                <Header cartAmount={cartAmount}/>
                 <div className={styles.searchContainer}>
                     {!isAdmin && <Searchbar
                          searchTerm={searchTerm}
@@ -230,6 +286,7 @@ const Books: React.FC = () => {
                         books={filteredBooks}
                         // onAddToCart={handleBookClick}
                         onAddToCart={addToCart}
+                        onRemoveBook={handleRemoveBook} 
                     />    
                 </main>
             </div>
