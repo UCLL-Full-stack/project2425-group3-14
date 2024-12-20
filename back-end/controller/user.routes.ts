@@ -184,4 +184,18 @@ router.post('/signup', async (req: Request, res: Response, next: NextFunction) =
     }
 });
 
+router.post('/remove/:userId', async (req: Request, res: Response) => {
+    const stringUserId = req.params.userId;
+    const userId = parseInt(stringUserId, 10);
+
+    try {
+        const deletedUser = await userService.deleteUser(userId);
+        res.status(200).json(deletedUser);
+    } catch (error) {
+        console.error("Error removing this user:", error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to remove user';
+        res.status(400).json({ error: errorMessage });
+    };
+});
+
 export default router;

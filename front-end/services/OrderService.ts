@@ -16,8 +16,8 @@ const getAllOrders = (id: String) => {
 
 
 
-const LibraryService = {
+const OrderService = {
     getAllOrders,
 
 };
-export default LibraryService;
+export default OrderService;

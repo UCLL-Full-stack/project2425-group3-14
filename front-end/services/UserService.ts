@@ -25,9 +25,37 @@ const loginUser = (user: User) => {
     });
 };
 
+const getAllUsers = () => {
+    if (typeof window !== "undefined") {
+        const token = JSON.parse(sessionStorage.getItem("loggedInUser")!).token;
+        return fetch(process.env.NEXT_PUBLIC_API_URL + '/users', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+    }
+};
+
+const removeUser = (id: number) => {
+    if (typeof window !== "undefined") {
+        const token = JSON.parse(sessionStorage.getItem("loggedInUser")!).token;
+        return fetch(process.env.NEXT_PUBLIC_API_URL + `/users/remove/${id}`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+    }
+}
+
 const UserService = {
     createUser,
-    loginUser
+    loginUser,
+    getAllUsers,
+    removeUser,
 };
 
 export default UserService;

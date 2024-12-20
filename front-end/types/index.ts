@@ -43,7 +43,9 @@ export type LibraryBookListProps = {
     onAddToCart: (bookId: number) => void;
 }
 
-export type Role = 'admin' | 'customer' | 'manager';
+
+export type Role = 'admin' | 'customer' | 'guest';
+
 
 export type User = {
     id?: number;

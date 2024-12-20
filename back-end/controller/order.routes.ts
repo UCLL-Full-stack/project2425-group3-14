@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import orderService from '../service/order.service';
+import { UnauthorizedError } from "express-jwt";
 
 const router = express.Router();
 
@@ -70,6 +71,10 @@ router.get('/:userId?', async (req: Request & { auth: any }, res: Response, next
         const orders = await orderService.getAllOrders({ username, role }, userId);
         res.status(200).json(orders);
     } catch (error) {
+        console.error("Error in GET /orders/:userId:", error);
+        if (error instanceof UnauthorizedError) {
+            return res.status(401).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Failed to get orders' });
     }
 });

@@ -1,12 +1,32 @@
 import Head from "next/head";
 import Header from "@/components/header";
+import styles from "../styles/Homepage.module.css";
 import React, { useState, useEffect } from "react";
+import CartService from "@/services/CartService";
+import { CartItem } from "@/types";
+
 
 const Home: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState<string>("guest");
+  const [cartAmount, setCartAmount] = useState<number>(0);
 
-  
+  const getCartAmount = async () => {
+          if (typeof window !== "undefined") {
+              const cartId = JSON.parse(sessionStorage.getItem("loggedInUser")!).cartId;
+              const response = await CartService.allBooksInCart(cartId);
+              const cartItems = await response.json();
+              console.log("Cart Items:", cartItems);
+              if (cartItems.items && Array.isArray(cartItems.items)) {
+                  const totalQuantity = cartItems.items.reduce((total: number, cartItem: CartItem) => total + cartItem.quantityInCart, 0);
+              
+                  setCartAmount(totalQuantity);
+                  } else {
+                  console.error("cartItems.items is not an array:", cartItems.items);
+                  }
+          }
+      }
+      
   useEffect(() => {
     const loggedInUser = sessionStorage.getItem("loggedInUser");
 
@@ -16,6 +36,7 @@ const Home: React.FC = () => {
         if (parsedUser?.username) {
           setUsername(parsedUser.username);
           setIsLoggedIn(true);
+          getCartAmount();
         }
       } catch (error) {
         console.error("Error parsing loggedInUser", error);
@@ -32,11 +53,53 @@ const Home: React.FC = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>
-        <Header />
-        <main className="p-1 flex-grow flex justify-center items-center">
+        <Header cartAmount={cartAmount}/>
+        <main className={styles.main}>
           <section>
-            <h2>Welcome, {username}</h2>
-            <p>With BookMarkt you can easily <br />search and buy books.</p>
+            {isLoggedIn ? 
+              <h2>Welcome, {username}</h2>
+            :
+              <h2>Welcome, stranger</h2>
+            }
+            {isLoggedIn ? 
+             <p>With BookMarkt you can easily <br />search and buy books.</p> 
+            : 
+             <p>Login/register first to<br />search and buy books.</p>
+            }
+          </section>
+          <section className={styles.section}>
+            <h3>User Information</h3>
+            <table className={styles.customTable}>
+              <thead className={styles.customThead}>
+                <tr>
+                  <th className={styles.customTableT}>Username</th>
+                  <th className={styles.customTableT}>Password</th>
+                  <th className={styles.customTableT}>Role</th>
+                </tr>
+              </thead>
+              <tbody className={styles.customTbody}>
+                <tr>
+                  <td className={styles.customTableT}>guest</td>
+                  <td className={styles.customTableT}>guest123</td>
+                  <td className={styles.customTableT}>guest</td>
+                </tr>
+                <tr>
+                  <td className={styles.customTableT}>maria</td>
+                  <td className={styles.customTableT}>maria123</td>
+                  <td className={styles.customTableT}>customer</td>
+                </tr>
+                <tr>
+                  <td className={styles.customTableT}>john</td>
+                  <td className={styles.customTableT}>john1234</td>
+                  <td className={styles.customTableT}>customer</td>
+                </tr>
+                <tr>
+                  <td className={styles.customTableT}>admin</td>
+                  <td className={styles.customTableT}>admin123</td>
+                  <td className={styles.customTableT}>admin</td>
+                </tr>
+              </tbody>
+            </table>
           </section>
         </main>
       </div>

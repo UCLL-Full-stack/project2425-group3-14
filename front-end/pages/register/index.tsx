@@ -14,6 +14,7 @@ const Register: React.FC = () => {
 
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         
@@ -103,13 +104,14 @@ const Register: React.FC = () => {
                     required
                     />
 
-                    <button type="submit" className="register-button">
+                    <button type="submit" className="form-button">
                         Register
                     </button>
                 </form>
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-                <p>Already have an account? <a href="/login">login</a></p>
+                <p>Already have an account or want to continue as guest? <a href="/login">login</a></p>
+               
                 </section>
             </main>
         </div>

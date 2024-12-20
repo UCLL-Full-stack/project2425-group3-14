@@ -4,10 +4,10 @@ import { UnauthorizedError } from "express-jwt";
 
 const getAllOrders = async ({ username, role }, userId): Promise<Order[]> => {
     const id = parseInt(userId, 10);
-    if (role === 'admin' || role === 'manager'){
+    if (role === 'admin'){
         return await orderDb.getAllOrders();
     }
-    else if (id){
+    else if (role === 'customer'){
         return await orderDb.getAllOrdersByUserId(id);
     }
     else {

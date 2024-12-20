@@ -1,6 +1,7 @@
 import { Book } from "../model/book";
 
-type Role = 'admin' | 'customer' | 'manager';
+type Role = 'admin' | 'customer' | 'guest';
+
 
 type Genre = 
     | 'Fiction' 
@@ -47,4 +48,16 @@ type Cart = {
     totalPrice: number,
 }
 
-export { Role, Cart, UserInput, Genre, CartItem, OrderItem, AuthenticationResponse };
+
+type BookInput = {
+    id?: number;
+    name: string;
+    quantity: number;
+    author: string;
+    genres: string[];
+    price: number;
+    imageUrl: string;
+}
+
+export { Role, Cart, UserInput, Genre, CartItem, AuthenticationResponse, BookInput, OrderItem };
+
