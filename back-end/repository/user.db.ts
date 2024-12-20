@@ -50,7 +50,8 @@ const findUserByUsername = async ({ username}: { username: string }): Promise<Us
         throw new Error('Database error. See server log for details');
     }
 }
-const findUserById = async ({ id}: { id: number }): Promise<User | null> => {
+const findUserById = async ( id: number): Promise<User | null> => {
+    console.log(id + 1);
     try {
         const userPrisma = await database.user.findFirst({
             where: { id },

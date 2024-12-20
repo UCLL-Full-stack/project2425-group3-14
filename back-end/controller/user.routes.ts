@@ -117,10 +117,11 @@ router.get('/', async (req: Request & { auth: any }, res: Response, next: NextFu
  *         description: Failed to get user.
  */
 router.get('/:id', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-
+    const stringUserId = req.params.id;
+    const userId = parseInt(stringUserId, 10);
+    console.log(userId);
     try {
-        const user = await UserService.getUserById(id); // Assuming UserService.getUserById is implemented
+        const user = await UserService.getUserById(userId); 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
