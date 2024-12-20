@@ -92,6 +92,46 @@ router.get('/', async (req: Request & { auth: any }, res: Response, next: NextFu
 
 /**
  * @swagger
+ * /users/{id}:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Retrieve a user by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A user object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Failed to get user.
+ */
+router.get('/:id', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+
+    try {
+        const user = await UserService.getUserById(id); // Assuming UserService.getUserById is implemented
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
  * /users/login:
  *   post:
  *     summary: Login using username/password. Returns an object with JWT token and user name when succesful.

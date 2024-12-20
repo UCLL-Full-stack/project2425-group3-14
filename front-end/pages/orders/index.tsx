@@ -71,14 +71,13 @@ const Orders: React.FC = () => {
 
     const getUsernameById = async (userId: number): Promise<string | null> => {
         try {
-            const response = await UserService.getAllUsers();
+            const response = await UserService.getUserById(userId);
     
             if (!response.ok) {
                 console.error("Failed to fetch users:", response.statusText);
                 return null;
             }
-            const users = await response.json();
-            const user = users.find((user: { id: number }) => user.id === userId);
+            const user = await response.json();
     
             if (!user) {
                 console.error("User not found");
@@ -144,7 +143,7 @@ const Orders: React.FC = () => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: { locale: any; }) => {
     const { locale } = context;
     return {
         props: {

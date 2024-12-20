@@ -38,6 +38,19 @@ const getAllUsers = () => {
     }
 };
 
+const getUserById = (id: number) => {
+    if (typeof window !== "undefined") {
+        const token = JSON.parse(sessionStorage.getItem("loggedInUser")!).token;
+        return fetch(process.env.NEXT_PUBLIC_API_URL + '/users/' + id, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+    }
+};
+
 const removeUser = (id: number) => {
     if (typeof window !== "undefined") {
         const token = JSON.parse(sessionStorage.getItem("loggedInUser")!).token;
@@ -56,6 +69,7 @@ const UserService = {
     loginUser,
     getAllUsers,
     removeUser,
+    getUserById,
 };
 
 export default UserService;
