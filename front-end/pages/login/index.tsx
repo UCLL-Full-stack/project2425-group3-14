@@ -205,6 +205,11 @@ const Login: React.FC = () => {
                   <td>customer</td>
                 </tr>
                 <tr>
+                  <td>john</td>
+                  <td>john1234</td>
+                  <td>customer</td>
+                </tr>
+                <tr>
                   <td>guest</td>
                   <td>guest123</td>
                   <td>guest</td>

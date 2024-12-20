@@ -24,6 +24,19 @@
         "guest": "Ga verder als gast"
     },
 
-    "language": "Taal"
+    "language": "Taal",
+    
+    "cart": { 
+        "title": "Jouw kart", 
+        "product": "Product", 
+        "price": "Prijs", 
+        "quantity": "Hoeveelheid", 
+        "total": "Totaal", 
+        "by": "van", 
+        "remove": "Verwijder", 
+        "order": "Bestel", 
+        "total-amount": "Totale hoeveelheid: $", 
+        "empty": "Jouw kart is leeg"
+    }
 
 }

@@ -3,8 +3,11 @@ import React from "react";
 import styles from "../styles/Cart.module.css";
 import { CartItem } from "@/types";
 import CartService from "@/services/CartService";
+import { useTranslation } from "next-i18next";
+
 
 interface CartBookListProps {
+    
     items: CartItem[];
     onAdjustQuantity: (bookId: number, action: "increase" | "decrease") => void;
     onRemoveFromCart: (bookId: number) => void;
@@ -16,6 +19,7 @@ interface CartBookListProps {
 }
 
 const CartBookList: React.FC<CartBookListProps> = ({
+    
     items,
     onAdjustQuantity,
     onRemoveFromCart,
@@ -25,6 +29,8 @@ const CartBookList: React.FC<CartBookListProps> = ({
     isLoading,
     cartId
 }) => {
+    
+    const { t } = useTranslation();
 
     return (
         <section className={styles.bookSection}>
@@ -32,10 +38,10 @@ const CartBookList: React.FC<CartBookListProps> = ({
                 {items.length > 0 ? (
                     <>
                         <div className={styles.headers}>
-                            <h3 className={styles.productHeader}>Product</h3>
-                            <h4 className={styles.priceHeader}>Price</h4>
-                            <h4 className={styles.quantityHeader}>Quantity</h4>
-                            <h4 className={styles.priceTotalHeader}>Total</h4>
+                            <h3 className={styles.productHeader}>{t("cart.product")}</h3>
+                            <h4 className={styles.priceHeader}>{t("cart.price")}</h4>
+                            <h4 className={styles.quantityHeader}>{t("cart.quantity")}</h4>
+                            <h4 className={styles.priceTotalHeader}>{t("cart.total")}</h4>
                         </div>
                         {items.map((item) => (
                             <div key={item.book.id} className={styles.bookItem}>
@@ -45,13 +51,13 @@ const CartBookList: React.FC<CartBookListProps> = ({
                                         <h3 className={styles.bookTitle} onClick={() => onBookClick(item.book.id)} style={{ cursor: "pointer" }}>
                                             {item.book.name}
                                         </h3>
-                                        <p className={styles.bookAuthor}>by {item.book.author}</p>
+                                        <p className={styles.bookAuthor}>{t("cart.by")} {item.book.author}</p>
                                         <button 
                                             className={styles.removeFromCart}
                                             onClick={() => onRemoveFromCart(item.book.id)}
                                             disabled={isLoading}
                                         >
-                                            Remove
+                                            {t("cart.remove")}
                                         </button>
                                     </div>
                                 </div>
@@ -74,18 +80,18 @@ const CartBookList: React.FC<CartBookListProps> = ({
                         ))}
                     </>
                 ) : (
-                    <p>Your cart is empty</p>
+                    <p>{t("cart.empty")}</p>
                 )}
             </div>
             {items.length > 0 && (
                 <div className={styles.totalPrice}>
-                    <h3>Total Amount: ${totalPrice.toFixed(2)}</h3>
+                    <h3>{t("cart.total-amount")}{totalPrice.toFixed(2)}</h3>
                     <button 
                         className={styles.orderButton} 
                         onClick={() => onOrderCart()}
                         disabled={isLoading}
                     >
-                        Order
+                        {t("cart.order")}
                     </button>
                 </div>
             )}

@@ -24,6 +24,19 @@
         "guest": "Continue as guest"
     },
 
-    "language": "Language"
+    "language": "Language",
+    
+    "cart": { 
+        "title": "Your cart", 
+        "product": "Product", 
+        "price": "Price", 
+        "quantity": "Quantity", 
+        "total": "Total", 
+        "by": "by", 
+        "remove": "Remove", 
+        "order": "Order", 
+        "total-amount": "Total Amount: $", 
+        "empty": "Your cart is empty"
+    }
 
 }

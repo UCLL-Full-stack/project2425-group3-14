@@ -7,6 +7,7 @@ import { CartItem } from "@/types";
 import CartService from "@/services/CartService";
 import { useRouter } from "next/router";
 import CartBookList from "@/components/cartBookList";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Cart: React.FC = () => {
@@ -16,6 +17,7 @@ const Cart: React.FC = () => {
     const [cartId, setCartId] = useState<string | null>(null);
     const [cartAmount, setCartAmount] = useState<number>(0);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { t } = useTranslation(); 
     const router = useRouter();
 
     const fetchBooksInCart = async () => {
@@ -195,7 +197,7 @@ const Cart: React.FC = () => {
             </Head>
             <Header cartAmount={cartAmount}/>
             <div className={styles.container}>
-                <h2 className={styles.title}>Your Cart</h2>
+                <h2 className={styles.title}>{t("cart.title")}</h2>
                 <main className={styles.main}>
                     <CartBookList
                         items={items}
