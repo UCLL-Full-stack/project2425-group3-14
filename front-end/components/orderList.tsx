@@ -15,8 +15,15 @@ const OrderList: React.FC<OrderListProps> = ({ orders, getUsernameById }) => {
         const fetchUsernames = async () => {
             const usernameMap: { [key: number]: string | null } = {};
             for (const order of orders) {
+                console.log(`Fetching username for userId: ${order.userId}`);
                 const username = await getUsernameById(order.userId);
-                usernameMap[order.userId] = username;
+                if (username !== null) {
+                    console.log(`Fetched username: ${username} for userId: ${order.userId}`);
+                    usernameMap[order.userId] = username;
+                }else {
+                    console.log(`Failed to fetch username for userId: ${order.userId}`);
+                    usernameMap[order.userId] = 'Username not found';
+                }
             }
             setUsernames(usernameMap);
         };
@@ -39,7 +46,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, getUsernameById }) => {
                             <h3 className={styles.orderId}>
                                 Order #{order.id}
                             </h3>
-                            <p className={styles.username}>User: {usernames[order.userId] || 'Loading...'}</p>
+                            <p className={styles.username}>User: {usernames[order.userId] ? usernames[order.userId] : 'Loading...'}</p>
                             <p className={styles.totalPrice}>Total: ${order.totalPrice.toFixed(2)}</p>
                         </div>
 

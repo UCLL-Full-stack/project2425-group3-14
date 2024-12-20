@@ -75,6 +75,16 @@ const getAllUsers = async ({role}): Promise<User[]> => {
     }
 };
 
+const getUserById = async (id: number): Promise<User> => {
+    const user = await userDb.findUserById(id);
+    console.log(id);
+    if (!user) {
+        throw new Error("User with this id does not exist (anymore)!");
+    }
+    return user;
+
+}
+
 const deleteUser = async (id): Promise<User> => {
     const user = await userDb.findUserById(id);
 
@@ -85,4 +95,4 @@ const deleteUser = async (id): Promise<User> => {
     return await userDb.deleteUser(id);
 }
 
-export default { registerUser, getAllUsers, createUser, authenticate, deleteUser };
+export default { registerUser, getAllUsers, createUser, authenticate, deleteUser, getUserById };
