@@ -8,6 +8,8 @@ import OrderList from "@/components/orderList";
 import UserService from "@/services/UserService";
 import CartService from "@/services/CartService";
 import { CartItem } from "@/types";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
 
 const Orders: React.FC = () => {
     const [orders, setOrders] = useState<Order[]|null>([]);
@@ -141,5 +143,14 @@ const Orders: React.FC = () => {
         </>
     );
 };
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
+  };
 
 export default Orders;

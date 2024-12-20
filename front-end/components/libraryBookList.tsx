@@ -25,6 +25,17 @@ const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart })
   }, []);
     // const isLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('loggedInUser');
 
+    const handleRemoveBook = async (bookId: number) => {
+        try {
+            await LibraryService.removeBook(bookId);
+    
+            // fetchUsers();
+            // setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+        } catch (error) {
+            console.error("Failed to remove user:", error);
+        }
+    };
+
     const handleBookClick = (bookId: number) => {
         router.push(`/books/${bookId}`);
     };
@@ -62,7 +73,7 @@ const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart })
                             )}
                             {isAdmin && (
                                 <button
-                                    onClick={() => onRemoveBook(book.id)}
+                                    onClick={() => handleRemoveBook(book.id)}
                                     className={styles.deleteBook}
                                 >
                                     Delete book
