@@ -95,7 +95,6 @@ const getAllUsers = async (): Promise<User[]> => {
 
 const deleteUser = async (id: number): Promise<User> => {
     try {
-
         const user = await database.user.findUnique({
             where: { id },
             include: { cart: true },
@@ -104,6 +103,14 @@ const deleteUser = async (id: number): Promise<User> => {
         if (!user) {
             throw new Error(`User with id ${id} was not found.`);
         }
+
+        await database.orderItem.deleteMany({
+            where: { orderId: { in: (await database.order.findMany({ where: { userId: id } })).map(order => order.id) } },
+        });
+
+        await database.order.deleteMany({
+            where: { userId: id },
+        });
 
         if (user.cart) {
             await database.cartItem.deleteMany({

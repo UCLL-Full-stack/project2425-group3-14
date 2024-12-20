@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ cartAmount = 0 }) => {
           {isAdmin && <li><a href="/users">{t('header.users')}</a></li>}
           {isLoggedIn && ( <li><a href="/library">{t("header.library")}</a></li> )}
           {!isGuest && isLoggedIn && (
-          <li><a href="/cart">{t('header.cart')} {cartAmount > 0 && <span>({cartAmount})</span>}</a></li>
+          <li><a href="/cart">{t('header.cart')} {cartAmount > 0 && <span className="cartAmount">{cartAmount}</span>}</a></li>
           )}
           {!isGuest && isLoggedIn && (
             <li><a href="/orders">Orders</a></li>)
