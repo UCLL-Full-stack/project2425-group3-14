@@ -5,8 +5,6 @@ import { useRouter } from 'next/router';
 import { LibraryBookListProps } from '@/types';
 import LibraryService from '@/services/LibraryService';
 
-
-
 const LibraryBookList: React.FC<LibraryBookListProps> = ({ books, onAddToCart }) => {
     const router = useRouter();
     const [isLoggedIn, setIsLoggedIn] = useState(false);  

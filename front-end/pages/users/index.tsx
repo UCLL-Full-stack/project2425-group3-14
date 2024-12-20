@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import UserService from "@/services/UserService";
 import { User } from "@/types";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Users: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -85,4 +86,12 @@ const Users: React.FC = () => {
     );
 };
 
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
+  };
 export default Users;

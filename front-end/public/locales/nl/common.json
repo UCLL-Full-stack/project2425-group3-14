@@ -1,0 +1,29 @@
+{
+    "header": { 
+        "login": "Log in", 
+        "logout": "Uitloggen", 
+        "language": "Taal", 
+        "users": "Gebruikers", 
+        "cart": "Kart", 
+        "library": "Bibliotheek"
+    },
+
+    "home": {
+        "welcome": "Welkom",
+        "textLoggedIn": "Met BookMarkt kan je boeken opzoeken en kopen.",
+        "textNotLoggedIn": "Log in/registreer om boeken op te zoeken en te kopen."
+    },
+
+    "login": {
+        "title": "Log in",
+        "username": "Gebruikersnaam:",
+        "password": "Wachtwoord:",
+        "create-account": "Maak een account aan?",
+        "register": "registreer",
+        "or": "of",
+        "guest": "Ga verder als gast"
+    },
+
+    "language": "Taal"
+
+}

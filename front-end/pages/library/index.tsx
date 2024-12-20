@@ -10,6 +10,7 @@ import LibraryService from "@/services/LibraryService";
 import CartService from "@/services/CartService";
 import { useRouter } from "next/router";
 import LibraryBookList from "@/components/libraryBookList";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Books: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
@@ -235,5 +236,14 @@ const Books: React.FC = () => {
         </>
     );
 };
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
+  };
 
 export default Books;

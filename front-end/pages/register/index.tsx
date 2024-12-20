@@ -3,6 +3,7 @@ import Head from "next/head.js";
 import Header from "../../components/header";
 import React, { useState } from "react";
 import UserService from "@/services/UserService";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Register: React.FC = () => {
 
@@ -117,5 +118,15 @@ const Register: React.FC = () => {
         </div>
         </>
     );
-}
+};
+
+export const getServerSideProps = async (context) => {
+  const { locale } = context;
+  return {
+      props: {
+          ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+  };
+};
+
 export default Register;

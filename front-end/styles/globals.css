@@ -23,6 +23,11 @@ nav h1 {
   font-size: 1.5rem;
 }
 
+h2 {
+  text-align: center;
+  margin: 1.5rem;
+}
+
 nav ul {
   list-style: none;
   display: flex;
@@ -93,12 +98,25 @@ label {
 
 input[type="text"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="number"] {
   flex: 1;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+}
+
+.genres-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+
+.genres-checkboxes div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .form-button {
@@ -181,6 +199,7 @@ input[type="password"] {
 
 table {
   margin: auto;
+  padding-top: 1rem;
 }
 
 thead {
@@ -233,4 +252,12 @@ tr:hover td button:active {
 
 .h2 {
   text-align: center;
+  margin-top: 2rem;
+}
+
+.cartAmount {
+  background-color: #0861c7 ;
+  border-radius: 20%;
+  padding: 0.1rem 0.4rem;
+  color: white;
 }

@@ -5,10 +5,15 @@ import React, { useState } from "react";
 import UserService from "../../services/UserService.ts";
 import { StatusMessage } from "@types";
 import classNames from "classnames";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { t } = useTranslation(); 
+  
 
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -144,9 +149,9 @@ const Login: React.FC = () => {
         <Header />
         <main className="p-1 flex-grow flex justify-center items-center">
           <section>
-            <h2>Login</h2>
+            <h2>{t('login.title')}</h2>
             <form className="form" onSubmit={handleSubmit}>
-              <label htmlFor="username">Username:</label>
+              <label htmlFor="username">{t('login.username')}</label>
               <input
                 type="text"
                 id="username"
@@ -156,7 +161,7 @@ const Login: React.FC = () => {
                 required
               />
 
-              <label htmlFor="password">Password:</label>
+              <label htmlFor="password">{t('login.password')}</label>
               <input
                 type="password"
                 id="password"
@@ -167,23 +172,59 @@ const Login: React.FC = () => {
               />
 
               <button type="submit" className="form-button">
-                Login
+              {t('login.title')}
               </button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
             {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
             <p>
-              Create an account? <a href="/register">register</a>
+            {t('login.create-account')} <a href="/register">{t('login.register')}</a>
             </p>
-            <p>or</p>
+            <p>{t('login.or')}</p>
               <button onClick={() => loginAsGuest()} className="guest-button">
-              Continue as Guest
+              {t('login.guest')}
             </button>
+
+            <table>
+              <thead>
+                <tr>
+                <th>Name</th>
+                <th>Password</th>
+                <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>admin</td>
+                  <td>admin123</td>
+                  <td>admin</td>
+                </tr>
+                <tr>
+                  <td>maria</td>
+                  <td>maria123</td>
+                  <td>customer</td>
+                </tr>
+                <tr>
+                  <td>guest</td>
+                  <td>guest123</td>
+                  <td>guest</td>
+                </tr>
+              </tbody>
+            </table>
           </section>
         </main>
       </div>
     </>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const { locale } = context;
+  return {
+      props: {
+          ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+  };
 };
 
 export default Login;

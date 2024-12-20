@@ -1,0 +1,29 @@
+{
+    "header": { 
+        "login": "Login", 
+        "logout": "Logout", 
+        "language": "Language", 
+        "users": "Users", 
+        "cart": "Cart", 
+        "library": "Library"
+    },
+
+    "home": {
+        "welcome": "Welcome,",
+        "textLoggedIn": "With BookMarkt you can search and buy books.",
+        "textNotLoggedIn": "Login/register to search and buy books."
+    },
+
+    "login": {
+        "title": "Login",
+        "username": "Username:",
+        "password": "Password:",
+        "create-account": "Create an account?",
+        "register": "register",
+        "or": "or",
+        "guest": "Continue as guest"
+    },
+
+    "language": "Language"
+
+}

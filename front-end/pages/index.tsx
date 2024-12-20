@@ -1,10 +1,13 @@
 import Head from "next/head";
 import Header from "@/components/header";
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Home: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState<string>("guest");
+  const { t } = useTranslation(); 
 
   
   useEffect(() => {
@@ -36,20 +39,29 @@ const Home: React.FC = () => {
         <main className="p-1 flex-grow flex justify-center items-center">
           <section>
             {isLoggedIn ? 
-              <h2>Welcome, {username}</h2>
+              <h2>{t('home.welcome')} {username}</h2>
             :
-              <h2>Welcome, stranger</h2>
+              <h2>{t('home.welcome')}</h2>
             }
             {isLoggedIn ? 
-             <p>With BookMarkt you can easily <br />search and buy books.</p> 
+             <p>{t('home.textLoggedIn')}</p> 
             : 
-             <p>Login/register first to<br />search and buy books.</p>
+             <p>{t('home.textNotLoggedIn')}</p>
             }
           </section>
         </main>
       </div>
     </>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const { locale } = context;
+  return {
+      props: {
+          ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+  };
 };
 
 export default Home;

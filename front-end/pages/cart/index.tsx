@@ -7,6 +7,7 @@ import { CartItem } from "@/types";
 import CartService from "@/services/CartService";
 import { useRouter } from "next/router";
 import CartBookList from "@/components/cartBookList";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Cart: React.FC = () => {
     const [items, setItems] = useState<CartItem[]>([]); 
@@ -140,5 +141,14 @@ const Cart: React.FC = () => {
         </>
     );
 };
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
+  };
 
 export default Cart;

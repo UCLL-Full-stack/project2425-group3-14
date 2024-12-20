@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import CartService from '@/services/CartService';
 import { CartItem } from '@/types';
+import Language from "./Language";
+import { useTranslation } from "next-i18next";
 
 const Header: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,33 +11,8 @@ const Header: React.FC = () => {
   const [isGuest, setIsGuest] = useState(false);
   const [cartAmount, setCartAmount] = useState(0);
   const router = useRouter();
-
-  const fetchCartAmount = async () => {
-    const user = sessionStorage.getItem('loggedInUser');
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      const cartId = parsedUser.cartId;
-
-      if (cartId) {
-        try {
-          const response = await CartService.allBooksInCart(cartId);
-
-          if (response.ok) {
-            const data = await response.json();
-            const totalQuantity = data.items?.reduce(
-              (total: number, item: CartItem) => total + item.quantityInCart,
-              0
-            );
-            setCartAmount(totalQuantity || 0);
-          } else {
-            console.error("Failed to fetch cart data:", response.statusText);
-          }
-        } catch (error) {
-          console.error("Error fetching cart data:", error);
-        }
-      }
-    }
-  };
+  const { t } = useTranslation();
+  
   useEffect(() => {
     const user = sessionStorage.getItem('loggedInUser');
     if (user) {
@@ -43,7 +20,6 @@ const Header: React.FC = () => {
       setIsLoggedIn(true);
       setIsAdmin(parsedUser.role === 'admin' || parsedUser.role === 'ADMIN');
       setIsGuest(parsedUser.role === 'guest');
-      fetchCartAmount();
       console.log('test '+ parsedUser);
     }
   }, []);
@@ -62,12 +38,12 @@ const Header: React.FC = () => {
       <nav>
         <a href="/" className="header1"><h1>Book<span className="blue-text">Markt</span></h1></a>
         <ul>
-          {isAdmin && <li><a href="/users">Users</a></li>}
-          {isLoggedIn && ( <li><a href="/library">Library</a></li> )}
+          {isAdmin && <li><a href="/users">{t('header.users')}</a></li>}
+          {isLoggedIn && ( <li><a href="/library">{t("header.library")}</a></li> )}
           {!isGuest && isLoggedIn && (
-          <li><a href="/cart">Cart {cartAmount > 0 && <span>({cartAmount})</span>}</a></li>
+          <li><a href="/cart">{t('header.cart')}</a></li>
           )}
-          {!isLoggedIn && <li><a href="/login">Login</a></li>}
+          {!isLoggedIn && <li><a href="/login">{t('header.login')}</a></li>}
           {isLoggedIn && (
             <li>
               <button
@@ -79,10 +55,11 @@ const Header: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                Logout
+                {t('header.logout')}
               </button>
             </li>
           )}
+          <Language />
         </ul>
       </nav>
     </header>

@@ -7,6 +7,7 @@ import LibraryService from "@/services/LibraryService";
 import styles from "../../styles/Book.module.css"; 
 import CartService from "@/services/CartService";
 import { useCart } from "@/context/cartContext";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const ReadBookById = () => {
     const [book, setBook] = useState<Book>(null);
@@ -80,4 +81,13 @@ const ReadBookById = () => {
         </>
     );
 };
+
+export const getServerSideProps = async (context) => {
+    const { locale } = context;
+    return {
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
+    };
+  };
 export default ReadBookById;
